@@ -54,18 +54,17 @@ switch ($method) {
         }
 
         $namaFile = null;
-        if (isset($_FILES['gambar']) && $_FILES['gambar']['error'] === UPLOAD_ERR_OK) {
+        if (isset($_FILES['gambar']) && !empty($_FILES['gambar']['tmp_name'])) {
+            validateUploadedImage($_FILES['gambar']);
             $ext = strtolower(pathinfo($_FILES['gambar']['name'], PATHINFO_EXTENSION));
-            $allowedExts = ['jpg', 'jpeg', 'png', 'webp'];
-            if (!in_array($ext, $allowedExts)) {
-                sendResponse(['error' => 'Format file promo tidak diizinkan. Hanya file gambar (JPG, PNG, WEBP) yang diperbolehkan.'], 400);
-            }
 
             if (!is_dir($UPLOAD_DIR)) mkdir($UPLOAD_DIR, 0755, true);
             $namaFile = 'promo_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
             
-            if (!move_uploaded_file($_FILES['gambar']['tmp_name'], $UPLOAD_DIR . $namaFile)) {
-                sendResponse(['error' => 'Gagal mengunggah gambar promosi'], 500);
+            if (!@move_uploaded_file($_FILES['gambar']['tmp_name'], $UPLOAD_DIR . $namaFile)) {
+                if (!@copy($_FILES['gambar']['tmp_name'], $UPLOAD_DIR . $namaFile)) {
+                    sendResponse(['error' => 'Gagal mengunggah gambar promosi'], 500);
+                }
             }
         }
 

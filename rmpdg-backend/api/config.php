@@ -134,24 +134,100 @@ function validatePhone(string $phone): bool {
     return (bool) preg_match('/^[0-9+\-\s]{8,20}$/', $phone);
 }
 
-function validateUploadedImage(array $file, array $allowedMimes = ['image/jpeg', 'image/png', 'image/webp']): void {
-    if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
+/**
+ * Validasi Komprehensif File Gambar yang Diunggah (2 Layer Security Validation):
+ * Layer 1: Extension Whitelist & Double-Extension Prevention (Mencegah upload file executable .php, .phtml, .exe, dll)
+ * Layer 2: MIME Type, Magic Bytes (File Signature), & Image Structure Validation (Mencegah MIME & header spoofing)
+ */
+function validateUploadedImage(array $file, array $allowedExts = ['jpg', 'jpeg', 'png', 'webp', 'gif'], int $maxSizeBytes = 5242880): void {
+    // 1. Cek keberadaan file & error code PHP upload
+    if (!isset($file) || empty($file['tmp_name']) || !isset($file['error']) || $file['error'] !== UPLOAD_ERR_OK) {
         sendResponse(['error' => 'File gambar wajib diupload'], 400);
     }
 
-    $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-    $allowedExts = ['jpg', 'jpeg', 'png', 'webp'];
-    if (!in_array($ext, $allowedExts, true)) {
-        sendResponse(['error' => 'Format file tidak diizinkan. Hanya JPG, PNG, atau WEBP yang diperbolehkan.'], 400);
+    // 2. Cek Ukuran File (Maksimal 5MB)
+    if (isset($file['size']) && $file['size'] > $maxSizeBytes) {
+        sendResponse(['error' => 'Ukuran file gambar terlalu besar (Maksimal 5MB)'], 400);
     }
 
-    $imageInfo = @getimagesize($file['tmp_name']);
-    if ($imageInfo === false) {
-        sendResponse(['error' => 'File yang diupload bukan merupakan file gambar asli yang valid.'], 400);
+    // -------------------------------------------------------------
+    // LAYER 1: VALIDASI EXTENSION WHITELIST & DOUBLE EXTENSION
+    // -------------------------------------------------------------
+    $fileName = $file['name'] ?? '';
+    $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+    if (empty($ext) || !in_array($ext, $allowedExts, true)) {
+        sendResponse(['error' => 'Format file tidak diizinkan. Hanya gambar (JPG, JPEG, PNG, WEBP, GIF) yang diperbolehkan.'], 400);
     }
 
-    if (!in_array($imageInfo['mime'], $allowedMimes, true)) {
-        sendResponse(['error' => 'MIME type file gambar tidak diizinkan.'], 400);
+    // Mencegah Double Extension & Executable Bypass (contoh: shell.php.png, payload.phtml.jpg)
+    $lowerName = strtolower($fileName);
+    $dangerousExts = ['php', 'phtml', 'php3', 'php4', 'php5', 'phps', 'phar', 'inc', 'exe', 'sh', 'cgi', 'pl', 'asp', 'aspx', 'jsp', 'htaccess'];
+    foreach ($dangerousExts as $danger) {
+        if (strpos($lowerName, '.' . $danger) !== false) {
+            sendResponse(['error' => 'File yang diunggah terdeteksi berisiko keamanan.'], 400);
+        }
+    }
+
+    // -------------------------------------------------------------
+    // LAYER 2: VALIDASI MIME TYPE, MAGIC BYTES & FILE SIGNATURE
+    // -------------------------------------------------------------
+    $tmpPath = $file['tmp_name'];
+    if (!file_exists($tmpPath) || !is_readable($tmpPath)) {
+        sendResponse(['error' => 'File temporary tidak ditemukan di server.'], 400);
+    }
+
+    // 2a. Deteksi MIME Type Aktual menggunakan Fileinfo (finfo_file)
+    $allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    $actualMime = '';
+
+    if (function_exists('finfo_open')) {
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        if ($finfo) {
+            $actualMime = strtolower((string) finfo_file($finfo, $tmpPath));
+            finfo_close($finfo);
+        }
+    } elseif (function_exists('mime_content_type')) {
+        $actualMime = strtolower((string) mime_content_type($tmpPath));
+    }
+
+    if (!empty($actualMime) && !in_array($actualMime, $allowedMimes, true)) {
+        sendResponse(['error' => 'Tipe konten file tidak diizinkan. File harus berupa gambar valid.'], 400);
+    }
+
+    // 2b. Verifikasi Struktur Gambar dengan getimagesize()
+    $imageInfo = @getimagesize($tmpPath);
+    if ($imageInfo === false || empty($imageInfo['mime']) || !in_array(strtolower($imageInfo['mime']), $allowedMimes, true)) {
+        sendResponse(['error' => 'File yang diunggah bukan merupakan gambar asli yang valid.'], 400);
+    }
+
+    // 2c. Verifikasi File Signature (Magic Bytes) langsung dari binary header
+    $fp = @fopen($tmpPath, 'rb');
+    if ($fp) {
+        $header = fread($fp, 12);
+        fclose($fp);
+
+        $isValidSignature = false;
+        // JPEG: FF D8 FF
+        if (substr($header, 0, 3) === "\xFF\xD8\xFF") {
+            $isValidSignature = true;
+        }
+        // PNG: 89 50 4E 47 0D 0A 1A 0A
+        elseif (substr($header, 0, 8) === "\x89\x50\x4E\x47\x0D\x0A\x1A\x0A") {
+            $isValidSignature = true;
+        }
+        // WEBP: RIFF .... WEBP
+        elseif (substr($header, 0, 4) === 'RIFF' && substr($header, 8, 4) === 'WEBP') {
+            $isValidSignature = true;
+        }
+        // GIF: GIF87a / GIF89a
+        elseif (substr($header, 0, 6) === 'GIF87a' || substr($header, 0, 6) === 'GIF89a') {
+            $isValidSignature = true;
+        }
+
+        if (!$isValidSignature) {
+            sendResponse(['error' => 'Header signature file tidak cocok dengan format gambar valid.'], 400);
+        }
     }
 }
 

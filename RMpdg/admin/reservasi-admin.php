@@ -573,6 +573,12 @@
 
       const statusLabels = { pending:'⏳ Pending', dikonfirmasi:'✅ Dikonfirmasi', selesai:'🏁 Selesai', dibatalkan:'❌ Dibatalkan' };
 
+      let buktiHtml = '-';
+      if (row.bukti_bayar) {
+        const imgUrl = `${API_BASE}/../uploads/${row.bukti_bayar}`;
+        buktiHtml = `<a href="${imgUrl}" target="_blank" style="color:var(--primary);font-weight:700;text-decoration:underline;"><i class="fa fa-image"></i> Lihat Foto Bukti</a>`;
+      }
+
       document.getElementById('resModalContent').innerHTML = `
         <div><span>ID / Kode</span><strong>${row.kode_reservasi || '#' + String(row.id).padStart(3,'0')}</strong></div>
         <div><span>Status</span><strong>${statusLabels[row.status] || row.status}</strong></div>
@@ -582,6 +588,8 @@
         <div><span>Tanggal & Jam</span><strong>${tglDisplay} | ${row.jam || '-'}</strong></div>
         <div><span>Jumlah Tamu</span><strong>${row.jumlah_tamu} orang</strong></div>
         <div><span>Jenis Acara</span><strong>${escHtml(row.jenis_acara || 'Makan Biasa')}</strong></div>
+        <div><span>Metode Bayar</span><strong>${escHtml(row.metode_bayar || 'QRIS')}</strong></div>
+        <div><span>Bukti Pembayaran</span><strong>${buktiHtml}</strong></div>
         <div class="full-col" style="grid-column:1/-1;"><span>Catatan</span><strong>${escHtml(row.catatan || '-')}</strong></div>
         <div class="full-col" style="grid-column:1/-1;"><span>Waktu Daftar</span><strong>${row.waktu_daftar || '-'}</strong></div>
       `;

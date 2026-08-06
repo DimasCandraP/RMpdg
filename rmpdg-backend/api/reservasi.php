@@ -39,12 +39,39 @@ switch ($method) {
 
     // -----------------------------------------------------------------
     case 'POST':
-        $data = readJsonBody();
+        $UPLOAD_DIR = __DIR__ . '/../uploads/';
 
-        $wajib = ['nama', 'telepon', 'tanggal', 'jam', 'jumlah_tamu'];
-        foreach ($wajib as $field) {
-            if (empty($data[$field])) {
-                sendResponse(['error' => "Field '$field' wajib diisi"], 400);
+        // Mendukung data dari FormData ($_POST) maupun Body JSON
+        $isMultipart = !empty($_POST) || isset($_FILES['fileBukti']);
+        $inputData   = $isMultipart ? $_POST : readJsonBody();
+
+        $nama        = trim($inputData['nama'] ?? '');
+        $telepon     = trim($inputData['telepon'] ?? '');
+        $email       = trim($inputData['email'] ?? '');
+        $tanggal     = trim($inputData['tanggal'] ?? '');
+        $jam         = trim($inputData['jam'] ?? '');
+        $jumlahTamu  = trim($inputData['jumlah_tamu'] ?? '');
+        $jenisAcara  = trim($inputData['jenis_acara'] ?? 'Makan Biasa');
+        $catatan     = trim($inputData['catatan'] ?? '');
+        $metodeBayar = trim($inputData['metode_bayar'] ?? $inputData['metodeBayar'] ?? 'QRIS');
+
+        if (!$nama || !$telepon || !$tanggal || !$jam || !$jumlahTamu) {
+            sendResponse(['error' => 'Data reservasi belum lengkap'], 400);
+        }
+
+        $namaFileBukti = null;
+        if (isset($_FILES['fileBukti']) && !empty($_FILES['fileBukti']['tmp_name'])) {
+            validateUploadedImage($_FILES['fileBukti']);
+            $ext = strtolower(pathinfo($_FILES['fileBukti']['name'], PATHINFO_EXTENSION));
+
+            if (!is_dir($UPLOAD_DIR)) mkdir($UPLOAD_DIR, 0755, true);
+            $namaFileBukti = 'bukti_res_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
+            $tujuanUpload  = $UPLOAD_DIR . $namaFileBukti;
+
+            if (!@move_uploaded_file($_FILES['fileBukti']['tmp_name'], $tujuanUpload)) {
+                if (!@copy($_FILES['fileBukti']['tmp_name'], $tujuanUpload)) {
+                    sendResponse(['error' => 'Gagal menyimpan file bukti pembayaran reservasi'], 500);
+                }
             }
         }
 
@@ -52,27 +79,29 @@ switch ($method) {
         $tempKode = 'TMP' . bin2hex(random_bytes(3));
 
         // Normalisasi jam (misal: '21.00 WIB' -> '21:00:00')
-        $jamFormatted = trim($data['jam']);
-        $jamFormatted = str_replace('.', ':', $jamFormatted);
+        $jamFormatted = str_replace('.', ':', $jam);
         $jamFormatted = preg_replace('/[^\d:]/', '', $jamFormatted);
         if (strlen($jamFormatted) === 5) {
             $jamFormatted .= ':00';
         }
 
         $stmt = $pdo->prepare(
-            'INSERT INTO reservasi (kode_reservasi, nama, telepon, email, tanggal, jam, jumlah_tamu, jenis_acara, catatan, status)
-             VALUES (:kode, :nama, :telepon, :email, :tanggal, :jam, :jumlah_tamu, :jenis_acara, :catatan, "pending")'
+            'INSERT INTO reservasi 
+                (kode_reservasi, nama, telepon, email, tanggal, jam, jumlah_tamu, jenis_acara, catatan, metode_bayar, bukti_bayar, status)
+             VALUES (:kode, :nama, :telepon, :email, :tanggal, :jam, :jumlah_tamu, :jenis_acara, :catatan, :metode, :bukti, "pending")'
         );
         $stmt->execute([
             ':kode'        => $tempKode,
-            ':nama'        => $data['nama'],
-            ':telepon'     => $data['telepon'],
-            ':email'       => $data['email'] ?? null,
-            ':tanggal'     => $data['tanggal'],
+            ':nama'        => $nama,
+            ':telepon'     => $telepon,
+            ':email'       => $email ?: null,
+            ':tanggal'     => $tanggal,
             ':jam'         => $jamFormatted ?: '12:00:00',
-            ':jumlah_tamu' => $data['jumlah_tamu'],
-            ':jenis_acara' => $data['jenis_acara'] ?? 'Makan Biasa',
-            ':catatan'     => $data['catatan'] ?? '',
+            ':jumlah_tamu' => (int) $jumlahTamu,
+            ':jenis_acara' => $jenisAcara,
+            ':catatan'     => $catatan,
+            ':metode'      => $metodeBayar,
+            ':bukti'       => $namaFileBukti,
         ]);
 
         $insertId = $pdo->lastInsertId();
@@ -81,7 +110,7 @@ switch ($method) {
         $updateStmt->execute([$kode, $insertId]);
         $pdo->commit();
 
-        syncPelanggan($pdo, $data['nama'], $data['email'] ?? $data['telepon']);
+        syncPelanggan($pdo, $nama, $email ?: $telepon);
 
         sendResponse(['success' => true, 'id' => $insertId, 'kode_reservasi' => $kode], 201);
         break;
