@@ -144,6 +144,10 @@
             </select>
           </div>
         </div>
+        <div class="form-group" style="margin-top:12px;">
+          <label>Catatan Khusus (Opsional)</label>
+          <textarea id="resCatatan" rows="2" placeholder="Contoh: Minta meja dekat AC / area non-smoking" style="width:100%; border:1.5px solid #ddd; border-radius:8px; padding:10px; font-family:inherit; font-size:0.9rem; outline:none; resize:vertical;"></textarea>
+        </div>
         <!-- Pembayaran Konfirmasi Reservasi -->
         <div style="font-size:0.9rem; font-weight:700; color:var(--primary); margin:24px 0 10px; padding-bottom:6px; border-bottom:2px solid var(--light);">
           Konfirmasi &amp; Pembayaran Reservasi
@@ -185,7 +189,7 @@
           <p id="resFileName" style="margin-top:6px; font-weight:700; color:#2e7d32; font-size:0.85rem;"></p>
         </div>
 
-        <button class="btn-submit" id="btnReservasi" onclick="submitReservasi()">
+        <button class="btn-submit" id="btnReservasi" onclick="submitReservasi(event)">
           <i class="fa fa-calendar-check"></i> Buat Reservasi &amp; Bayar
         </button>
 
@@ -296,16 +300,26 @@
         return;
       }
 
-      const nama = document.getElementById('resNama').value.trim();
-      const telepon = document.getElementById('resTelepon').value.trim();
-      const email = document.getElementById('resEmail').value.trim();
-      const tanggal = document.getElementById('resTanggal').value;
-      const jam = document.getElementById('resJam').value;
-      const jumlah_tamu = document.getElementById('resTamu').value;
-      const jenis_acara = document.getElementById('resAcara').value;
-      const catatan = document.getElementById('resCatatan').value.trim();
-      const metodeBayar = document.getElementById('resMetodeBayar').value;
+      const elNama = document.getElementById('resNama');
+      const elTelepon = document.getElementById('resTelepon');
+      const elEmail = document.getElementById('resEmail');
+      const elTanggal = document.getElementById('resTanggal');
+      const elJam = document.getElementById('resJam');
+      const elTamu = document.getElementById('resTamu');
+      const elAcara = document.getElementById('resAcara');
+      const elCatatan = document.getElementById('resCatatan');
+      const elMetode = document.getElementById('resMetodeBayar');
       const fileBukti = document.getElementById('resFileBukti');
+
+      const nama = elNama ? elNama.value.trim() : '';
+      const telepon = elTelepon ? elTelepon.value.trim() : '';
+      const email = elEmail ? elEmail.value.trim() : '';
+      const tanggal = elTanggal ? elTanggal.value : '';
+      const jam = elJam ? elJam.value : '';
+      const jumlah_tamu = elTamu ? elTamu.value : '';
+      const jenis_acara = elAcara ? elAcara.value : '';
+      const catatan = elCatatan ? elCatatan.value.trim() : '';
+      const metodeBayar = elMetode ? elMetode.value : '';
 
       if (!nama || !telepon || !tanggal || !jam || !jumlah_tamu) {
         alert('Data reservasi belum lengkap.');
@@ -360,7 +374,7 @@
         }, 4000);
 
       } catch (err) {
-        alert('Gagal membuat reservasi.');
+        alert(err.message || 'Gagal membuat reservasi.');
       }
     }
   </script>
