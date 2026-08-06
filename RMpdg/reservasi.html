@@ -241,15 +241,7 @@
     const API_BASE = window.API_BASE || (window.location.pathname.includes('/MPTI/') ? '/MPTI/rmpdg-backend/api' : '/rmpdg-backend/api');
 
     document.addEventListener('DOMContentLoaded', () => {
-      const isLoggedIn = (localStorage.getItem('is_logged_in') === 'true' || sessionStorage.getItem('is_logged_in') === 'true') || (localStorage.getItem('admin_logged_in') === 'true' || sessionStorage.getItem('admin_logged_in') === 'true');
-      if (!isLoggedIn) {
-        alert('⚠️ Perhatian!\n\nAnda wajib melakukan Login / Daftar akun terlebih dahulu sebelum membuat Reservasi Meja.');
-        localStorage.setItem('redirect_after_login', window.location.href);
-        window.location.href = 'login.html';
-        return;
-      }
-
-      // Auto-fill data pemesan jika tersedia dari sesi login akun
+      // Auto-fill data pemesan jika pengguna sudah login
       const uName = (localStorage.getItem('user_name') || sessionStorage.getItem('user_name'));
       const uContact = (localStorage.getItem('user_contact') || sessionStorage.getItem('user_contact'));
       if (uName) {
@@ -294,7 +286,7 @@
 
       const isLoggedIn = (localStorage.getItem('is_logged_in') === 'true' || sessionStorage.getItem('is_logged_in') === 'true') || (localStorage.getItem('admin_logged_in') === 'true' || sessionStorage.getItem('admin_logged_in') === 'true');
       if (!isLoggedIn) {
-        alert('Silakan login terlebih dahulu.');
+        alert('⚠️ Perhatian!\n\nSilakan Login atau Daftar akun terlebih dahulu untuk menyelesaikan pembuatan reservasi meja Anda.');
         localStorage.setItem('redirect_after_login', window.location.href);
         window.location.href = 'login.html';
         return;
