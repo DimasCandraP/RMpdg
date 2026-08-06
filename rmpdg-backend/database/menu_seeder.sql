@@ -189,18 +189,12 @@ INSERT INTO `menu` (`slug`, `kategori_id`, `nama`, `harga`, `deskripsi`, `berat`
  '± 100 gram', '150 kkal', 0, 4.3, 48,
  'img/cf3db3f294804090c83eb546c88da565.jpg', 'aktif'),
 
-<<<<<<< HEAD
 ('kerupuk', 3, 'Kerupuk',
-=======
- ('kerupuk', 3, 'Kerupuk',
->>>>>>> e44a34234917649369ce51e435e784885e0328b6
  1000,
  'Kerupuk renyah sebagai pelengkap makan, cocok dipadukan dengan lauk khas Padang.',
  '± 20 gram', '60 kkal', 0, 4.2, 42,
  'img/30825f62038ff446435a521c0237f561.jpg', 'aktif'),
 
-<<<<<<< HEAD
-=======
 ('rendang-sapi-bukittinggi', 3, 'Rendang Sapi Bukit Tinggi',
  28000,
  'Daging sapi olahan khas Bukittinggi dimasak dengan bumbu rempah-rempah otentik hingga meresap sempurna dan berwarna pekat gurih nikmat.',
@@ -375,17 +369,12 @@ INSERT INTO `menu` (`slug`, `kategori_id`, `nama`, `harga`, `deskripsi`, `berat`
  '± 110 gram', '210 kkal', 1, 4.8, 140,
  'img/IMG_6959.PNG', 'aktif'),
 
->>>>>>> e44a34234917649369ce51e435e784885e0328b6
 -- ===== SAYUR (kategori_id = 4) =====
 ('sayur-kapau', 4, 'Sayur Kapau',
  5000,
  'Sayur khas Kapau Padang dengan kuah santan kuning berisi berbagai sayuran segar dan bumbu rempah.',
  '± 200 gram', '160 kkal', 2, 4.7, 92,
-<<<<<<< HEAD
- 'img/d3f1a9ad74bb9ce6050ae1f6ee87763a.jpg', 'aktif'),
-=======
  'img/IMG_6958.PNG', 'aktif'),
->>>>>>> e44a34234917649369ce51e435e784885e0328b6
 
 ('gulai-singkong', 4, 'Gulai Daun Singkong',
  5000,
@@ -393,9 +382,6 @@ INSERT INTO `menu` (`slug`, `kategori_id`, `nama`, `harga`, `deskripsi`, `berat`
  '± 180 gram', '180 kkal', 2, 4.6, 80,
  'img/d3f1a9ad74bb9ce6050ae1f6ee87763a.jpg', 'aktif'),
 
-<<<<<<< HEAD
--- ===== MINUMAN (kategori_id = 5) =====
-=======
 ('daun-ubi', 4, 'Daun Ubi / Singkong Rebus',
  4000,
  'Rebusan daun singkong/ubi segar pilihan, lembut dan hijau alami sebagai pendamping lauk nasi Padang.',
@@ -529,7 +515,6 @@ INSERT INTO `menu` (`slug`, `kategori_id`, `nama`, `harga`, `deskripsi`, `berat`
  '± 250 ml', '110 kkal', 0, 4.8, 110,
  'img/IMG_6965.PNG', 'aktif'),
 
->>>>>>> e44a34234917649369ce51e435e784885e0328b6
 ('es-jeruk', 5, 'Es Jeruk',
  8000,
  'Minuman perasan jeruk manis asli yang segar dan dingin, pas sebagai penutup hidangan pedas.',
