@@ -284,5 +284,5 @@ document.addEventListener('DOMContentLoaded', () => {
   initActiveCategory();
   setupFilterEvents();
   applyFilter(true);
-  loadMenuFromAPI();
+  // loadMenuFromAPI(); // Disabled to preserve all rich menu items in menu.html
 });
