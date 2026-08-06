@@ -42,13 +42,8 @@ CREATE TABLE `admin` (
 -- Dumping data for table `admin`
 --
 
-<<<<<<< HEAD
 INSERT INTO `admin` (`id`, `nama`, `email`, `password_hash`, `role`, `is_aktif`, `created_at`, `updated_at`) VALUES
 (1, 'Administrator', 'admin@rmpadang.com', '$2y$10$488c12euFmJAd1KXyyQOhOEtZ/WWy3vB1DECj38u1fNt2eI5k.z6.', 'superadmin', 1, '2026-08-06 01:42:48', '2026-08-06 01:42:48');
-=======
-INSERT INTO `admin` (`id`, `nama`, `email`, `password_hash`, `role`, `is_aktif`) VALUES
-(1, 'Administrator', 'admin@rmpadang.com', '$2y$10$ts.ZrLpNj35wtYHiR.CX0uzKNTIkmksOA9L.qicFW9jsVgxiaUd/u', 'superadmin', 1);
->>>>>>> e44a34234917649369ce51e435e784885e0328b6
 
 -- --------------------------------------------------------
 
