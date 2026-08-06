@@ -34,12 +34,6 @@
             <a href="kategori.php" class="nav-item">
                 <i class="fa fa-tags"></i> Kategori Menu
             </a>
-            <a href="catering-admin.php" class="nav-item">
-                <i class="fa fa-box-open"></i> Paket Catering
-            </a>
-            <a href="pesanan.php" class="nav-item">
-                <i class="fa fa-clipboard-list"></i> Pesanan Catering
-            </a>
             <a href="pesanan-menu.php" class="nav-item">
                 <i class="fa fa-shopping-cart"></i> Pesanan Menu
             </a>
@@ -186,9 +180,9 @@
                             <i class="fa fa-plus"></i>
                             <span>Tambah Menu</span>
                         </a>
-                        <a href="catering-admin.php" class="qa-btn">
-                            <i class="fa fa-box-open"></i>
-                            <span>Kelola Paket</span>
+                        <a href="kategori.php" class="qa-btn">
+                            <i class="fa fa-tags"></i>
+                            <span>Kelola Kategori</span>
                         </a>
                         <a href="promosi-admin.php" class="qa-btn">
                             <i class="fa fa-percent"></i>

@@ -51,6 +51,14 @@ switch ($method) {
         $pdo->beginTransaction();
         $tempKode = 'TMP' . bin2hex(random_bytes(3));
 
+        // Normalisasi jam (misal: '21.00 WIB' -> '21:00:00')
+        $jamFormatted = trim($data['jam']);
+        $jamFormatted = str_replace('.', ':', $jamFormatted);
+        $jamFormatted = preg_replace('/[^\d:]/', '', $jamFormatted);
+        if (strlen($jamFormatted) === 5) {
+            $jamFormatted .= ':00';
+        }
+
         $stmt = $pdo->prepare(
             'INSERT INTO reservasi (kode_reservasi, nama, telepon, email, tanggal, jam, jumlah_tamu, jenis_acara, catatan, status)
              VALUES (:kode, :nama, :telepon, :email, :tanggal, :jam, :jumlah_tamu, :jenis_acara, :catatan, "pending")'
@@ -61,7 +69,7 @@ switch ($method) {
             ':telepon'     => $data['telepon'],
             ':email'       => $data['email'] ?? null,
             ':tanggal'     => $data['tanggal'],
-            ':jam'         => $data['jam'],
+            ':jam'         => $jamFormatted ?: '12:00:00',
             ':jumlah_tamu' => $data['jumlah_tamu'],
             ':jenis_acara' => $data['jenis_acara'] ?? 'Makan Biasa',
             ':catatan'     => $data['catatan'] ?? '',
