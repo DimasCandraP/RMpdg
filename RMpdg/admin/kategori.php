@@ -96,12 +96,12 @@
 
     <!-- Modal View Menu Per Kategori -->
     <div class="modal-overlay" id="viewMenuModal" onclick="closeViewMenuModal()">
-        <div class="modal-box" onclick="event.stopPropagation()" style="max-width:700px; width:92%;">
-            <div class="modal-header" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding-bottom:12px;">
-                <h3 id="viewMenuTitle" style="margin:0; font-size:1.1rem; color:var(--primary-dark,#8B0000);"><i class="fa fa-utensils"></i> Daftar Menu Kategori</h3>
-                <button onclick="closeViewMenuModal()" style="background:none; border:none; font-size:1.2rem; cursor:pointer; color:#888;"><i class="fa fa-times"></i></button>
+        <div class="modal-box" onclick="event.stopPropagation()" style="max-width:720px; width:92%; border-radius:20px; box-shadow:0 20px 50px rgba(0,0,0,0.2); padding:24px;">
+            <div class="modal-header" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px dashed #eee; padding-bottom:14px;">
+                <h3 id="viewMenuTitle" style="margin:0; font-size:1.15rem; color:var(--primary-dark,#8B0000); font-weight:800;"><i class="fa fa-utensils"></i> Daftar Menu Kategori</h3>
+                <button onclick="closeViewMenuModal()" style="background:#F5F5F5; border:none; width:32px; height:32px; border-radius:50%; font-size:1.1rem; cursor:pointer; color:#666; display:flex; align-items:center; justify-content:center; transition:all 0.2s;"><i class="fa fa-times"></i></button>
             </div>
-            <div class="modal-body" style="padding:16px 0 0; max-height:68vh; overflow-y:auto;">
+            <div class="modal-body" style="padding:18px 0 0; max-height:68vh; overflow-y:auto;">
                 <div id="viewMenuContent">
                     <p style="text-align:center; color:#888;">Memuat data menu...</p>
                 </div>
