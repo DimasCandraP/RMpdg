@@ -28,12 +28,19 @@ switch ($method) {
             sendResponse($menu);
         } else {
             $kategoriId = $_GET['kategori'] ?? null;
+            $showAll    = isset($_GET['all']) && $_GET['all'] == '1';
             
             if ($kategoriId) {
-                $stmt = $pdo->prepare('SELECT m.*, k.nama AS kategori_nama FROM menu m JOIN kategori_menu k ON m.kategori_id = k.id WHERE m.kategori_id = ? AND m.status = "aktif" ORDER BY m.id ASC');
+                $sql = 'SELECT m.*, k.nama AS kategori_nama FROM menu m JOIN kategori_menu k ON m.kategori_id = k.id WHERE m.kategori_id = ?';
+                if (!$showAll) $sql .= ' AND m.status = "aktif"';
+                $sql .= ' ORDER BY m.id ASC';
+                $stmt = $pdo->prepare($sql);
                 $stmt->execute([$kategoriId]);
             } else {
-                $stmt = $pdo->query('SELECT m.*, k.nama AS kategori_nama FROM menu m JOIN kategori_menu k ON m.kategori_id = k.id WHERE m.status = "aktif" ORDER BY m.id ASC');
+                $sql = 'SELECT m.*, k.nama AS kategori_nama FROM menu m JOIN kategori_menu k ON m.kategori_id = k.id';
+                if (!$showAll) $sql .= ' WHERE m.status = "aktif"';
+                $sql .= ' ORDER BY m.id ASC';
+                $stmt = $pdo->query($sql);
             }
             
             sendResponse($stmt->fetchAll());

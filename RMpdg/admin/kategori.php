@@ -94,6 +94,21 @@
         </div>
     </div>
 
+    <!-- Modal View Menu Per Kategori -->
+    <div class="modal-overlay" id="viewMenuModal" onclick="closeViewMenuModal()">
+        <div class="modal-box" onclick="event.stopPropagation()" style="max-width:700px; width:92%;">
+            <div class="modal-header" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #eee; padding-bottom:12px;">
+                <h3 id="viewMenuTitle" style="margin:0; font-size:1.1rem; color:var(--primary-dark,#8B0000);"><i class="fa fa-utensils"></i> Daftar Menu Kategori</h3>
+                <button onclick="closeViewMenuModal()" style="background:none; border:none; font-size:1.2rem; cursor:pointer; color:#888;"><i class="fa fa-times"></i></button>
+            </div>
+            <div class="modal-body" style="padding:16px 0 0; max-height:68vh; overflow-y:auto;">
+                <div id="viewMenuContent">
+                    <p style="text-align:center; color:#888;">Memuat data menu...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="../js/main.js"></script>
     <script>
         const API_BASE = window.API_BASE || (window.location.pathname.includes('/MPTI/') ? '/MPTI/rmpdg-backend/api' : '/rmpdg-backend/api');
@@ -137,9 +152,16 @@
                 <tr>
                     <td>#${item.id}</td>
                     <td><strong>${item.nama}</strong></td>
-                    <td><span class="badge confirmed">${item.total_menu || 0} Menu</span></td>
                     <td>
-                        <div class="action-btns">
+                        <span class="badge confirmed" style="cursor:pointer;" onclick="viewCategoryMenu(${item.id}, '${item.nama.replace(/'/g, "\\'")}')" title="Klik untuk melihat menu">
+                            <i class="fa fa-utensils"></i> ${item.total_menu || 0} Menu
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-btns" style="display:flex; gap:6px;">
+                            <button class="btn-act view" onclick="viewCategoryMenu(${item.id}, '${item.nama.replace(/'/g, "\\'")}')" title="Lihat Daftar Menu" style="background:#17a2b8; color:#fff; border:none; padding:6px 12px; border-radius:6px; font-size:0.8rem; cursor:pointer; font-weight:600; display:inline-flex; align-items:center; gap:5px;">
+                                <i class="fa fa-eye"></i> Lihat Menu
+                            </button>
                             <button class="btn-act delete" onclick="deleteKategori(${item.id})" title="Hapus">
                                 <i class="fa fa-trash"></i>
                             </button>
@@ -147,6 +169,62 @@
                     </td>
                 </tr>
             `).join('');
+        }
+
+        async function viewCategoryMenu(catId, catName) {
+            document.getElementById('viewMenuTitle').innerHTML = `<i class="fa fa-utensils"></i> Daftar Menu: <strong style="color:var(--primary,#8B0000);">${catName}</strong>`;
+            document.getElementById('viewMenuContent').innerHTML = `<p style="text-align:center; padding:20px; color:#888;"><i class="fa fa-spinner fa-spin"></i> Memuat daftar menu...</p>`;
+            document.getElementById('viewMenuModal').style.display = 'flex';
+
+            try {
+                const res = await fetch(`${API_BASE}/menu.php?kategori=${catId}&all=1`, { credentials: 'same-origin' });
+                if (!res.ok) throw new Error('Gagal memuat menu dari server');
+                const menuList = await res.json();
+
+                if (!Array.isArray(menuList) || menuList.length === 0) {
+                    document.getElementById('viewMenuContent').innerHTML = `<div style="text-align:center; padding:30px; color:#888;"><i class="fa fa-info-circle" style="font-size:2rem; margin-bottom:8px; display:block; color:#ccc;"></i>Belum ada menu terdaftar di kategori ini.</div>`;
+                    return;
+                }
+
+                document.getElementById('viewMenuContent').innerHTML = `
+                    <div style="font-size:0.85rem; color:#666; margin-bottom:12px;">Total <strong>${menuList.length}</strong> menu ditemukan pada kategori ini:</div>
+                    <div class="table-responsive">
+                        <table class="admin-table" style="font-size:0.88rem;">
+                            <thead>
+                                <tr>
+                                    <th>Gambar</th>
+                                    <th>Nama Menu</th>
+                                    <th>Harga</th>
+                                    <th>Pedas</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${menuList.map(m => {
+                                    const imgUrl = m.gambar_utama 
+                                        ? (m.gambar_utama.startsWith('http') ? m.gambar_utama : `${API_BASE}/../uploads/${m.gambar_utama}`)
+                                        : '../img/logo.png';
+                                    return `
+                                        <tr>
+                                            <td><img src="${imgUrl}" alt="${m.nama}" style="width:40px; height:40px; border-radius:6px; object-fit:cover; border:1px solid #eee;" onerror="this.src='../img/logo.png'" /></td>
+                                            <td><strong>${m.nama}</strong><br/><small style="color:#888;">/${m.slug}</small></td>
+                                            <td style="font-weight:700; color:var(--primary,#8B0000);">Rp ${(parseInt(m.harga)||0).toLocaleString('id-ID')}</td>
+                                            <td>${m.tingkat_pedas ? `<span style="color:#e74c3c; font-weight:700;">🌶️ ${m.tingkat_pedas}</span>` : '-'}</td>
+                                            <td><span class="badge ${m.status === 'aktif' ? 'confirmed' : 'cancelled'}">${m.status || 'aktif'}</span></td>
+                                        </tr>
+                                    `;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+            } catch (err) {
+                document.getElementById('viewMenuContent').innerHTML = `<p style="text-align:center; padding:20px; color:#c0392b;">Gagal memuat menu: ${err.message}</p>`;
+            }
+        }
+
+        function closeViewMenuModal() {
+            document.getElementById('viewMenuModal').style.display = 'none';
         }
 
         function openKatModal() {
