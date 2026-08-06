@@ -391,7 +391,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       const isLoggedIn = (localStorage.getItem('is_logged_in') === 'true' || sessionStorage.getItem('is_logged_in') === 'true') || (localStorage.getItem('admin_logged_in') === 'true' || sessionStorage.getItem('admin_logged_in') === 'true');
       if (!isLoggedIn) {
-        alert('⚠️ Perhatian!\n\nAnda wajib melakukan Login / Daftar akun terlebih dahulu sebelum melakukan Pembayaran & Checkout.');
+        alert('Silakan login terlebih dahulu.');
         localStorage.setItem('redirect_after_login', window.location.href);
         window.location.href = 'login.html';
         return;
@@ -508,23 +508,23 @@
 
       // Validasi data pemesan
       if (!nama || !telp) {
-        alert('Mohon lengkapi Nama dan No. WhatsApp Anda.');
+        alert('Data pemesan belum lengkap.');
         return;
       }
 
       // Validasi detail lokasi/tipe
       if (orderType === 'dinein' && !noMeja) {
-        alert('Mohon masukkan Nomor Meja Anda.');
+        alert('Nomor meja belum diisi.');
         return;
       }
       if (orderType === 'delivery' && !alamat) {
-        alert('Mohon masukkan Alamat Pengiriman Anda.');
+        alert('Alamat pengiriman belum diisi.');
         return;
       }
 
       // Validasi bukti transfer
       if (!fileBukti.files || fileBukti.files.length === 0) {
-        alert('Mohon upload bukti pembayaran/transfer Anda.');
+        alert('Bukti pembayaran belum diunggah.');
         return;
       }
 
@@ -556,7 +556,7 @@
         });
 
         const result = await response.json();
-        if (!response.ok) throw new Error(result.error || 'Gagal memproses pesanan Anda');
+        if (!response.ok) throw new Error(result.error || 'Gagal memproses pesanan');
 
         // Hapus data keranjang lokal setelah berhasil
         localStorage.removeItem('rm_cart');
@@ -565,7 +565,7 @@
         document.getElementById('successOverlay').style.display = 'flex';
 
       } catch (err) {
-        alert('Terjadi kesalahan: ' + err.message);
+        alert('Gagal menyimpan pesanan.');
       }
     }
 

@@ -292,7 +292,7 @@
       const pesan = document.getElementById('isiPesan').value.trim();
 
       if (!nama || !kontak || !pesan) {
-        alert('Mohon lengkapi semua kolom yang wajib diisi.');
+        alert('Data pesan belum lengkap.');
         return;
       }
 
@@ -311,18 +311,18 @@
         const result = await response.json();
         if (!response.ok) throw new Error(result.error || 'Gagal mengirim pesan');
 
-        alert(`Terima kasih ${nama}!\nPesan Anda telah berhasil dikirim ke sistem kami.`);
+        alert('Pesan berhasil dikirim!');
         document.getElementById('formKirimPesan').reset();
 
       } catch (err) {
-        alert('Terjadi kesalahan: ' + err.message);
+        alert('Gagal mengirim pesan.');
       }
     }
 
     function handleSubscribe(event) {
       event.preventDefault();
       const email = document.getElementById('subscribeEmail').value.trim();
-      alert(`Terima kasih!\nEmail ${email} telah terdaftar untuk berlangganan promo.`);
+      alert('Berhasil berlangganan promo!');
       document.getElementById('subscribeEmail').value = '';
     }
   </script>

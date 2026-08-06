@@ -398,7 +398,7 @@
             document.getElementById('errRegisterContact').textContent = result.error;
             wrapContact.classList.add('input-error');
           } else {
-            document.getElementById('errorMsgDaftar').textContent = result.error || 'Pendaftaran gagal! Silakan coba lagi.';
+            document.getElementById('errorMsgDaftar').textContent = result.error || 'Pendaftaran gagal.';
           }
           return;
         }
@@ -408,14 +408,14 @@
         localStorage.setItem('user_name', nama);
         localStorage.setItem('user_contact', contact);
 
-        alert(`Pendaftaran Akun Berhasil!\n\nSelamat datang, ${nama}. Akun Anda telah aktif.`);
+        alert(`Pendaftaran berhasil!`);
         const redirectTarget = localStorage.getItem('redirect_after_login') || 'index.html';
         localStorage.removeItem('redirect_after_login');
         window.location.href = redirectTarget;
 
       } catch (err) {
         console.error('API Register error:', err);
-        document.getElementById('errorMsgDaftar').textContent = 'Gagal terhubung ke server. Mohon periksa koneksi Anda dan coba lagi.';
+        document.getElementById('errorMsgDaftar').textContent = 'Gagal terhubung ke server.';
       }
     }
 
@@ -425,11 +425,11 @@
 
     function triggerGoogleSignIn() {
       if (GOOGLE_CLIENT_ID === 'MASUKKAN_CLIENT_ID_GOOGLE_ANDA_DISINI') {
-        alert('⚠️ Google Sign-In belum dikonfigurasi.\n\nMinta developer untuk memasukkan Google Client ID di file login.html.');
+        alert('Google Sign-In belum dikonfigurasi.');
         return;
       }
       if (typeof google === 'undefined' || !google.accounts) {
-        alert('⚠️ Library Google Sign-In sedang dimuat. Silakan pastikan koneksi internet terhubung dan coba lagi.');
+        alert('Google Sign-In sedang dimuat. Coba beberapa saat lagi.');
         return;
       }
 
@@ -478,7 +478,7 @@
         const result = await res.json();
 
         if (!res.ok || !result.success) {
-          alert('Login Google gagal: ' + (result.error || 'Silakan coba lagi.'));
+          alert('Login Google gagal.');
           return;
         }
 
@@ -495,7 +495,7 @@
         window.location.href = redirectTarget;
 
       } catch (err) {
-        alert('Terjadi kesalahan jaringan: ' + err.message);
+        alert('Gagal terhubung ke server.');
       } finally {
         btn.innerHTML = origText;
         btn.disabled = false;
@@ -505,7 +505,7 @@
     async function handleGoogleCredential(response) {
       const idToken = response.credential;
       if (!idToken) {
-        alert('Gagal mendapatkan token dari Google.');
+        alert('Login Google gagal.');
         return;
       }
 
@@ -526,7 +526,7 @@
         const result = await res.json();
 
         if (!res.ok || !result.success) {
-          alert('Login Google gagal: ' + (result.error || 'Silakan coba lagi.'));
+          alert('Login Google gagal.');
           return;
         }
 
@@ -543,7 +543,7 @@
         window.location.href = redirectTarget;
 
       } catch (err) {
-        alert('Terjadi kesalahan jaringan: ' + err.message);
+        alert('Gagal terhubung ke server.');
       } finally {
         btn.innerHTML = origText;
         btn.disabled = false;
