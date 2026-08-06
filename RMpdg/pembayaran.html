@@ -1,19 +1,21 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pembayaran &amp; Checkout - RM Padang</title>
-  <link rel="stylesheet" href="css/style.css"/>
-  <link rel="stylesheet" href="css/reservasi.css"/>
-  <link rel="stylesheet" href="css/catering-form.css"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/reservasi.css" />
+  <link rel="stylesheet" href="css/catering-form.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
     /* Custom style overrides for pembayaran page */
     .pembayaran-card {
       margin-top: 16px;
     }
+
     .summary-item {
       display: flex;
       align-items: center;
@@ -21,20 +23,24 @@
       padding: 10px 0;
       border-bottom: 1px solid #eee;
     }
+
     .summary-item img {
       width: 48px;
       height: 48px;
       border-radius: 6px;
       object-fit: cover;
     }
+
     .summary-info {
       flex: 1;
     }
+
     .summary-name {
       font-weight: 700;
       font-size: 0.9rem;
       color: var(--text-dark);
     }
+
     .summary-meta {
       font-size: 0.8rem;
       color: var(--text-gray);
@@ -42,27 +48,31 @@
       justify-content: space-between;
       margin-top: 2px;
     }
+
     .summary-meta strong {
       color: var(--primary);
     }
+
     .summary-list {
       max-height: 250px;
       overflow-y: auto;
       margin-bottom: 16px;
     }
+
     .success-overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.7);
+      background: rgba(0, 0, 0, 0.7);
       backdrop-filter: blur(5px);
       z-index: 10000;
       display: none;
       align-items: center;
       justify-content: center;
     }
+
     .success-modal {
       background: white;
       padding: 40px;
@@ -70,30 +80,42 @@
       text-align: center;
       max-width: 450px;
       width: 90%;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
       animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
+
     @keyframes popIn {
-      from { transform: scale(0.8); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
+      from {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
     }
+
     .success-modal i {
       font-size: 4.5rem;
       color: #2e7d32;
       margin-bottom: 20px;
     }
+
     .success-modal h3 {
       font-size: 1.5rem;
       font-weight: 800;
       color: var(--text-dark);
       margin-bottom: 12px;
     }
+
     .success-modal p {
       font-size: 0.92rem;
       color: var(--text-gray);
       line-height: 1.6;
       margin-bottom: 24px;
     }
+
     .success-modal button {
       background: var(--primary);
       color: white;
@@ -104,9 +126,11 @@
       cursor: pointer;
       transition: all 0.2s;
     }
+
     .success-modal button:hover {
       background: var(--primary-dark);
     }
+
     .qris-section {
       text-align: center;
       margin: 15px 0;
@@ -115,6 +139,7 @@
       border: 1px dashed #ccc;
       border-radius: 8px;
     }
+
     .qris-section img {
       width: 160px;
       height: 160px;
@@ -124,15 +149,16 @@
     }
   </style>
 </head>
+
 <body>
 
   <!-- NAVBAR -->
   <nav class="navbar">
     <div class="nav-brand">
-      <img src="img/logo.png" alt="Logo" class="logo"/>
+      <img src="img/logo.png" alt="Logo" class="logo" />
       <div>
-        <span class="brand-name">RM PADANG</span>
-        <span class="brand-sub">Rumah Makan Padang</span>
+        <span class="brand-name">Rumah Makan Padang</span>
+        <span class="brand-sub">Resto Pesona Kapau</span>
       </div>
     </div>
     <ul class="nav-links">
@@ -170,11 +196,11 @@
       <div class="form-row">
         <div class="form-group">
           <label>Nama Lengkap <span class="req">*</span></label>
-          <input type="text" id="nama" placeholder="Masukkan nama lengkap Anda"/>
+          <input type="text" id="nama" placeholder="Masukkan nama lengkap Anda" />
         </div>
         <div class="form-group">
           <label>No. WhatsApp / Telepon <span class="req">*</span></label>
-          <input type="text" id="telp" placeholder="08xxxxxxxxxx"/>
+          <input type="text" id="telp" placeholder="08xxxxxxxxxx" />
         </div>
       </div>
 
@@ -194,7 +220,7 @@
       <!-- Dine-in Field -->
       <div class="form-group" id="dineinGroup">
         <label>Nomor Meja <span class="req">*</span></label>
-        <input type="text" id="noMeja" placeholder="Contoh: Meja 05"/>
+        <input type="text" id="noMeja" placeholder="Contoh: Meja 05" />
       </div>
 
       <!-- Delivery Field -->
@@ -205,15 +231,18 @@
 
       <!-- Takeaway Note -->
       <div class="form-group" id="takeawayGroup" style="display:none;">
-        <div style="background:#e8f5e9; border-left:4px solid #2e7d32; padding:12px; border-radius:6px; color:#1b5e20; font-size:0.88rem;">
-          <i class="fa fa-circle-info"></i> Pesanan Anda akan disiapkan dan siap diambil langsung di restoran dalam waktu 20-30 menit.
+        <div
+          style="background:#e8f5e9; border-left:4px solid #2e7d32; padding:12px; border-radius:6px; color:#1b5e20; font-size:0.88rem;">
+          <i class="fa fa-circle-info"></i> Pesanan Anda akan disiapkan dan siap diambil langsung di restoran dalam
+          waktu 20-30 menit.
         </div>
       </div>
 
       <!-- Catatan Tambahan -->
       <div class="form-group" style="margin-top:16px;">
         <label>Catatan Tambahan (Opsional)</label>
-        <textarea id="catatan" rows="2" placeholder="Tulis catatan (contoh: pedas sekali, pisahkan kuah, dll)"></textarea>
+        <textarea id="catatan" rows="2"
+          placeholder="Tulis catatan (contoh: pedas sekali, pisahkan kuah, dll)"></textarea>
       </div>
 
       <!-- Info Pembayaran -->
@@ -230,7 +259,7 @@
         <!-- QRIS Box -->
         <div id="qrisDetail" class="qris-section">
           <p>Scan kode QRIS berikut dengan aplikasi e-wallet atau banking Anda:</p>
-          <img src="img/cf3db3f294804090c83eb546c88da565.jpg" alt="QRIS RM Padang" id="qrisImage"/>
+          <img src="img/cf3db3f294804090c83eb546c88da565.jpg" alt="QRIS RM Padang" id="qrisImage" />
           <strong>A/N RM Padang Autentik</strong>
         </div>
 
@@ -256,7 +285,7 @@
             <i class="fa fa-cloud-arrow-up"></i>
             <p>Klik untuk upload foto bukti transfer</p>
             <span>Format: JPG, JPEG, PNG (Maks. 5MB)</span>
-            <input type="file" id="fileBukti" accept="image/*" style="display:none;" onchange="previewFile(this)"/>
+            <input type="file" id="fileBukti" accept="image/*" style="display:none;" onchange="previewFile(this)" />
           </div>
           <p class="file-name" id="fileName" style="margin-top:8px; font-weight:700; color:#2e7d32;"></p>
         </div>
@@ -271,7 +300,7 @@
     <div class="cform-right">
       <div class="ringkasan-card">
         <h3>Ringkasan Pesanan</h3>
-        
+
         <!-- Summary items list -->
         <div class="summary-list" id="summaryList">
           <!-- Rendered dynamically -->
@@ -304,8 +333,18 @@
     <div class="success-modal">
       <i class="fa-regular fa-circle-check"></i>
       <h3>Pembayaran Berhasil!</h3>
-      <p>Pesanan Anda telah diterima oleh RM Padang dan sedang diproses. Silakan tunggu konfirmasi selanjutnya melalui WhatsApp.</p>
-      <button onclick="goToHome()">Kembali ke Beranda</button>
+      <p>Pesanan Anda telah diterima oleh RM Padang dan sedang diproses. Silakan tunggu konfirmasi selanjutnya melalui
+        WhatsApp.</p>
+      <div style="display:flex; gap:10px; justify-content:center; margin-top:15px; flex-wrap:wrap;">
+        <button onclick="window.location.href='profil.html'"
+          style="background:var(--primary-dark,#8B0000); color:#fff; border:none; padding:10px 20px; border-radius:8px; font-weight:700; cursor:pointer;">
+          <i class="fa fa-receipt"></i> Lihat Riwayat Pesanan
+        </button>
+        <button onclick="goToHome()"
+          style="background:#eee; color:#333; border:none; padding:10px 20px; border-radius:8px; font-weight:700; cursor:pointer;">
+          Kembali ke Beranda
+        </button>
+      </div>
     </div>
   </div>
 
@@ -313,7 +352,7 @@
   <footer class="footer">
     <div class="footer-content">
       <div class="footer-brand">
-        <img src="img/logo.png" alt="Logo" class="logo"/>
+        <img src="img/logo.png" alt="Logo" class="logo" />
         <div>
           <span class="brand-name">RM PADANG</span>
           <span class="brand-sub">Rumah Makan Padang</span>
@@ -335,19 +374,43 @@
       <h4>Kontak</h4>
       <p><i class="fa fa-phone"></i> +62 812-3456-7890</p>
       <p><i class="fa fa-envelope"></i> info@rmpadang.com</p>
-      <p><a href="https://maps.app.goo.gl/tJoHpj8N56SnJppR9" target="_blank" style="color: inherit; text-decoration: none;"><i class="fa fa-map-marker-alt"></i> Jl. Magelang - Yogyakarta Jl. Tangkilan No.16, Tangkilan, Tamanagung, Kec. Muntilan, Kabupaten Magelang, Jawa Tengah 56413</a></p>
+      <p><a href="https://maps.app.goo.gl/tJoHpj8N56SnJppR9" target="_blank"
+          style="color: inherit; text-decoration: none;"><i class="fa fa-map-marker-alt"></i> Jl. Magelang - Yogyakarta
+          Jl. Tangkilan No.16, Tangkilan, Tamanagung, Kec. Muntilan, Kabupaten Magelang, Jawa Tengah 56413</a></p>
     </div>
     <p class="footer-copy">© 2026 RM Padang. All rights reserved.</p>
   </footer>
 
   <script src="js/main.js"></script>
   <script>
+    const API_BASE = window.API_BASE || (window.location.pathname.includes('/MPTI/') ? '/MPTI/rmpdg-backend/api' : '/rmpdg-backend/api');
+
     let cartItems = [];
     let subtotal = 0;
     let tax = 0;
     let total = 0;
 
     document.addEventListener('DOMContentLoaded', () => {
+      const isLoggedIn = (localStorage.getItem('is_logged_in') === 'true' || sessionStorage.getItem('is_logged_in') === 'true') || (localStorage.getItem('admin_logged_in') === 'true' || sessionStorage.getItem('admin_logged_in') === 'true');
+      if (!isLoggedIn) {
+        alert('⚠️ Perhatian!\n\nAnda wajib melakukan Login / Daftar akun terlebih dahulu sebelum melakukan Pembayaran & Checkout.');
+        localStorage.setItem('redirect_after_login', window.location.href);
+        window.location.href = 'login.html';
+        return;
+      }
+
+      // Autofill data dari akun terdaftar
+      const uName = (localStorage.getItem('user_name') || sessionStorage.getItem('user_name'));
+      const uContact = (localStorage.getItem('user_contact') || sessionStorage.getItem('user_contact'));
+      if (uName) {
+        const elNama = document.getElementById('nama');
+        if (elNama && !elNama.value) elNama.value = uName;
+      }
+      if (uContact) {
+        const elTelp = document.getElementById('telp');
+        if (elTelp && !elTelp.value) elTelp.value = uContact;
+      }
+
       // Load cart items
       try {
         cartItems = JSON.parse(localStorage.getItem('rm_cart')) || [];
@@ -435,7 +498,7 @@
       }
     }
 
-    function submitOrder() {
+    async function submitOrder() {
       const nama = document.getElementById('nama').value.trim();
       const telp = document.getElementById('telp').value.trim();
       const orderType = document.getElementById('orderType').value;
@@ -467,43 +530,45 @@
         return;
       }
 
-      // Simpan pesanan ke database localStorage
-      let pesananList = [];
+      const lokasi = orderType === 'dinein'
+        ? 'Meja ' + noMeja
+        : orderType === 'delivery'
+          ? alamat
+          : 'Ambil Sendiri';
+
+      // Susun FormData untuk kirim data teks sekaligus file gambar bukti bayar
+      const formData = new FormData();
+      formData.append('nama', nama);
+      formData.append('telp', telp);
+      formData.append('orderType', orderType);
+      formData.append('lokasi', lokasi);
+      formData.append('metodeBayar', paymentMethod === 'qris' ? 'QRIS' : 'Transfer BCA');
+      formData.append('catatan', catatan);
+
+      // Kirim isi keranjang sebagai JSON string (termasuk id, qty, harga, nama)
+      formData.append('items', JSON.stringify(
+        cartItems.map(x => ({ id: x.id, qty: x.qty, harga: x.harga, nama: x.nama }))
+      ));
+      formData.append('fileBukti', fileBukti.files[0]);
+
       try {
-        pesananList = JSON.parse(localStorage.getItem('rm_menu_orders')) || [];
-      } catch(e) {
-        pesananList = [];
+        const response = await fetch(`${API_BASE}/pesanan_menu.php`, {
+          method: 'POST',
+          body: formData // Browser otomatis mengatur header multipart/form-data
+        });
+
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || 'Gagal memproses pesanan Anda');
+
+        // Hapus data keranjang lokal setelah berhasil
+        localStorage.removeItem('rm_cart');
+
+        // Tampilkan modal/popup sukses
+        document.getElementById('successOverlay').style.display = 'flex';
+
+      } catch (err) {
+        alert('Terjadi kesalahan: ' + err.message);
       }
-
-      const nextId = pesananList.length > 0 ? Math.max(...pesananList.map(x => x.numericId || 0)) + 1 : 1;
-      const newOrder = {
-        id: 'M-' + String(nextId).padStart(3, '0'),
-        numericId: nextId,
-        nama: nama,
-        telp: telp,
-        orderType: orderType,
-        lokasi: orderType === 'dinein' ? 'Meja ' + noMeja : orderType === 'delivery' ? alamat : 'Ambil Sendiri',
-        items: cartItems,
-        subtotal: subtotal,
-        pajak: tax,
-        total: total,
-        metodeBayar: paymentMethod === 'qris' ? 'QRIS' : 'Transfer BCA',
-        catatan: catatan,
-        status: 'pending',
-        waktuDaftar: new Date().toLocaleString('id-ID', {
-          day: '2-digit', month: 'short', year: 'numeric',
-          hour: '2-digit', minute: '2-digit'
-        })
-      };
-
-      pesananList.unshift(newOrder);
-      localStorage.setItem('rm_menu_orders', JSON.stringify(pesananList));
-
-      // Hapus data keranjang
-      localStorage.removeItem('rm_cart');
-
-      // Tampilkan popup sukses
-      document.getElementById('successOverlay').style.display = 'flex';
     }
 
     function goToHome() {
@@ -511,4 +576,5 @@
     }
   </script>
 </body>
+
 </html>

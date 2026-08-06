@@ -431,44 +431,74 @@
     position: relative;
     display: flex;
     align-items: center;
-}
-
-.login-input-wrapper i {
-    position: absolute;
-    left: 14px;
-    color: #999;
-    font-size: 0.95rem;
-}
-
-.login-input-wrapper input {
     width: 100%;
-    padding: 12px 42px 12px 40px;
     background: #FAF6F4;
     border: 1.5px solid #E5DFDA;
     border-radius: 8px;
-    outline: none;
-    font-size: 0.9rem;
-    color: var(--text-dark);
+    padding: 0 12px;
+    box-sizing: border-box;
     transition: all 0.2s;
 }
 
-.login-input-wrapper input:focus {
+.login-input-wrapper:focus-within {
     border-color: var(--primary);
     background: var(--white);
     box-shadow: 0 0 0 3px rgba(139, 0, 0, 0.08);
 }
 
-.btn-toggle-eye {
-    position: absolute;
-    right: 14px;
-    background: none;
-    border: none;
+.login-input-wrapper.input-error {
+    border-color: #d32f2f !important;
+    background-color: #FFF5F5 !important;
+}
+
+.login-input-wrapper > i {
     color: #999;
+    font-size: 0.95rem;
+    pointer-events: none;
+    margin-right: 10px;
+    flex-shrink: 0;
+}
+
+.login-input-wrapper input {
+    flex: 1;
+    width: 100%;
+    padding: 12px 0;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    font-size: 0.9rem;
+    color: var(--text-dark);
+    box-shadow: none !important;
+}
+
+.btn-toggle-eye {
+    background: transparent;
+    border: none;
+    color: #888;
     cursor: pointer;
     font-size: 0.95rem;
-    padding: 0;
+    padding: 4px;
+    margin-left: 8px;
     display: flex;
     align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.btn-toggle-eye i {
+    position: static !important;
+    left: auto !important;
+    font-size: 0.95rem;
+    color: #888;
+}
+
+.field-error-msg {
+    color: #d32f2f !important;
+    font-size: 0.78rem;
+    font-weight: 700;
+    margin-top: 5px;
+    margin-bottom: 2px;
+    display: block;
 }
 
 .form-options-row {
@@ -518,11 +548,12 @@
 }
 
 .login-error-msg {
-    color: #c0392b;
-    font-size: 0.82rem;
+    color: #d32f2f !important;
+    font-size: 0.85rem;
+    font-weight: 700;
     text-align: center;
-    margin-top: 4px;
-    min-height: 18px;
+    margin-top: 10px;
+    min-height: 20px;
 }
 
 /* Divider */

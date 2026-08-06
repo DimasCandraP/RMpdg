@@ -20,14 +20,13 @@
     <div class="nav-brand">
       <img src="img/logo.png" alt="Logo" class="logo" />
       <div>
-        <span class="brand-name">RM PADANG</span>
-        <span class="brand-sub">Rumah Makan Padang</span>
+        <span class="brand-name">Rumah Makan Padang</span>
+        <span class="brand-sub">Resto Pesona Kapau</span>
       </div>
     </div>
     <ul class="nav-links">
       <li><a href="index.html">BERANDA</a></li>
       <li><a href="menu.html" class="active">MENU</a></li>
-      <li><a href="catering.html">CATERING</a></li>
       <li><a href="reservasi.html">RESERVASI</a></li>
       <li><a href="promosi.html">PROMOSI</a></li>
       <li><a href="tentang-kami.html">TENTANG KAMI</a></li>
@@ -96,24 +95,6 @@
             <span class="tag-badge">Pedas</span>
           </td>
         </tr>
-        <tr>
-          <td>Tingkat Pedas</td>
-          <td class="pedas-row">
-            <i class="fa fa-pepper-hot"></i>
-            <i class="fa fa-pepper-hot"></i>
-            <i class="fa fa-pepper-hot"></i>
-            <i class="fa fa-pepper-hot"></i>
-            <i class="fa fa-pepper-hot low"></i>
-          </td>
-        </tr>
-        <tr>
-          <td>Berat Porsi</td>
-          <td>± 150 gram</td>
-        </tr>
-        <tr>
-          <td>Kalori</td>
-          <td>320 kkal</td>
-        </tr>
       </table>
 
       <!-- Jumlah & Keranjang -->
@@ -136,38 +117,8 @@
   <!-- MENU LAINNYA -->
   <section class="menu-lainnya">
     <h2>Menu Lainnya</h2>
-    <div class="lainnya-grid">
-
-      <a href="menu_detail.html?id=ayam-pop" class="lainnya-card">
-        <img src="img/451c3a2537616f5d5d06750972b5458e.jpg" alt="Ayam Pop" />
-        <h4>Ayam Pop</h4>
-        <span>Rp20.000</span>
-      </a>
-
-      <a href="menu_detail.html?id=dendeng-balado" class="lainnya-card">
-        <img src="img/ac649842c150745962b88a60234d9091.jpg" alt="Dendeng Balado" />
-        <h4>Dendeng Balado</h4>
-        <span>Rp28.000</span>
-      </a>
-
-      <a href="menu_detail.html?id=gulai-singkong" class="lainnya-card">
-        <img src="img/d3f1a9ad74bb9ce6050ae1f6ee87763a.jpg" alt="Gulai Daun Singkong" />
-        <h4>Gulai Daun Singkong</h4>
-        <span>Rp15.000</span>
-      </a>
-
-      <a href="menu_detail.html?id=gulai-ayam" class="lainnya-card">
-        <img src="img/ef425d5c417882455b49f2948c032384.jpg" alt="Gulai Ayam" />
-        <h4>Gulai Ayam</h4>
-        <span>Rp22.000</span>
-      </a>
-
-      <a href="menu_detail.html?id=es-jeruk" class="lainnya-card">
-        <img src="img/30825f62038ff446435a521c0237f561.jpg" alt="Es Jeruk" />
-        <h4>Es Jeruk</h4>
-        <span>Rp8.000</span>
-      </a>
-
+    <div class="lainnya-grid" id="lainnyaGrid">
+      <!-- diisi oleh JavaScript -->
     </div>
   </section>
 
@@ -177,8 +128,8 @@
       <div class="footer-brand">
         <img src="img/logo.png" alt="Logo" class="logo" />
         <div>
-          <span class="brand-name">RM PADANG</span>
-          <span class="brand-sub">Rumah Makan Padang</span>
+          <span class="brand-name">Rumah Makan Padang</span>
+          <span class="brand-sub">Resto Pesona Kapau</span>
         </div>
       </div>
       <p class="footer-desc">Nikmati hidangan khas Minang dengan bumbu pilihan dan cita rasa autentik.</p>
@@ -188,7 +139,6 @@
       <ul>
         <li><a href="index.html">Beranda</a></li>
         <li><a href="menu.html">Menu</a></li>
-        <li><a href="catering.html">Catering</a></li>
         <li><a href="reservasi.html">Reservasi</a></li>
         <li><a href="promosi.html">Promosi</a></li>
       </ul>
@@ -221,10 +171,38 @@
     }
 
     // Dynamic menu loading based on URL parameter
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
       const params = new URLSearchParams(window.location.search);
-      const menuId = params.get('id') || 'rendang';
-      const menu = MENU_DATA[menuId] || MENU_DATA['rendang'];
+      const menuSlug = params.get('id') || 'rendang';
+      const fallbackMenu = MENU_DATA[menuSlug] || MENU_DATA['rendang'];
+      let menu = fallbackMenu;
+
+      const apiBase = window.API_BASE || '/MPTI/rmpdg-backend/api';
+      try {
+        const res = await fetch(`${apiBase}/menu.php?slug=${encodeURIComponent(menuSlug)}`);
+        if (res.ok) {
+          const apiMenu = await res.json();
+          if (apiMenu && !apiMenu.error) {
+            menu = {
+              id: apiMenu.slug,
+              nama: apiMenu.nama,
+              harga: Number(apiMenu.harga),
+              deskripsi: apiMenu.deskripsi || fallbackMenu.deskripsi,
+              kategori: apiMenu.kategori_nama || fallbackMenu.kategori,
+              tags: fallbackMenu.tags || ['Khas Padang'],
+              pedas: Number(apiMenu.tingkat_pedas || fallbackMenu.pedas),
+              berat: apiMenu.berat || fallbackMenu.berat,
+              kalori: apiMenu.kalori || fallbackMenu.kalori,
+              rating: Number(apiMenu.rating || fallbackMenu.rating),
+              ulasan: Number(apiMenu.jumlah_ulasan || fallbackMenu.ulasan),
+              img: apiMenu.gambar_utama || fallbackMenu.img,
+              thumbnails: [apiMenu.gambar_utama || fallbackMenu.img, ...fallbackMenu.thumbnails.slice(1)]
+            };
+          }
+        }
+      } catch (e) {
+        console.warn('API fetch failed, fallback to MENU_DATA:', e);
+      }
 
       // Update breadcrumb and page title
       document.title = `${menu.nama} - Detail Menu - RM Padang`;
@@ -275,22 +253,52 @@
 
       // Table specs
       const tableRows = document.querySelectorAll('.detail-table tr');
-      if (tableRows.length >= 5) {
+      if (tableRows.length >= 2) {
         tableRows[0].querySelector('td:last-child').innerHTML = `<a href="menu.html" class="detail-cat">${menu.kategori}</a>`;
         tableRows[1].querySelector('td:last-child').innerHTML = menu.tags.map(tag => `<span class="tag-badge">${tag}</span>`).join('');
-        
-        let pedasHtml = '';
-        for (let i = 0; i < 5; i++) {
-          pedasHtml += `<i class="fa fa-pepper-hot ${i < menu.pedas ? '' : 'low'}"></i>`;
-        }
-        tableRows[2].querySelector('td:last-child').innerHTML = pedasHtml;
-        tableRows[3].querySelector('td:last-child').textContent = menu.berat;
-        tableRows[4].querySelector('td:last-child').textContent = menu.kalori;
       }
 
       // Bind local window menu variable for Cart submission
       window.currentMenu = menu;
+
+      // ===== MENU LAINNYA DINAMIS =====
+      renderMenuLainnya(menu);
     });
+
+    function renderMenuLainnya(currentMenu) {
+      const grid = document.getElementById('lainnyaGrid');
+      if (!grid || typeof MENU_DATA === 'undefined') return;
+
+      const currentId   = currentMenu.id;
+      const currentKat  = (currentMenu.kategori || '').toLowerCase();
+      const currentTags = currentMenu.tags || [];
+
+      // Hitung skor kemiripan untuk setiap item
+      const scored = Object.values(MENU_DATA)
+        .filter(item => item.id !== currentId)
+        .map(item => {
+          const kat  = (item.kategori || '').toLowerCase();
+          const tags = item.tags || [];
+
+          // Skor: kategori sama = +10, tiap tag sama = +2
+          let score = 0;
+          if (kat === currentKat) score += 10;
+          const matchedTags = tags.filter(t => currentTags.includes(t)).length;
+          score += matchedTags * 2;
+
+          return { item, score };
+        })
+        .sort((a, b) => b.score - a.score)  // urutkan dari paling mirip
+        .slice(0, 5);                         // ambil 5 teratas
+
+      grid.innerHTML = scored.map(({ item }) => `
+        <a href="menu_detail.html?id=${item.id}" class="lainnya-card">
+          <img src="${item.img}" alt="${item.nama}" />
+          <h4>${item.nama}</h4>
+          <span>Rp${item.harga.toLocaleString('id-ID')}</span>
+        </a>
+      `).join('');
+    }
 
     function addToCart() {
       const menu = window.currentMenu || MENU_DATA['rendang'];

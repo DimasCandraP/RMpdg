@@ -9,6 +9,8 @@
   <link rel="stylesheet" href="css/login.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <!-- Google Identity Services untuk Login dengan Google -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 
 <body class="login-page-body">
@@ -53,25 +55,27 @@
         </div>
 
         <!-- Form Masuk -->
-        <form class="login-form-fields" id="formMasuk" onsubmit="handleLogin(event)">
+        <form class="login-form-fields" id="formMasuk" onsubmit="handleLogin(event)" novalidate>
           <div class="form-group-login">
             <label for="loginEmail">Email atau Nomor Telepon</label>
-            <div class="login-input-wrapper">
+            <div class="login-input-wrapper" id="wrapLoginEmail">
               <i class="fa-regular fa-envelope"></i>
-              <input type="text" id="loginEmail" placeholder="Masukkan email atau phone" required />
+              <input type="text" id="loginEmail" placeholder="Masukkan email atau phone" />
             </div>
+            <span class="field-error-msg" id="errLoginEmail"></span>
           </div>
 
           <div class="form-group-login">
             <label for="loginPassword">Kata Sandi</label>
-            <div class="login-input-wrapper">
+            <div class="login-input-wrapper" id="wrapLoginPassword">
               <i class="fa-solid fa-lock"></i>
-              <input type="password" id="loginPassword" placeholder="• • • • • • • •" required />
+              <input type="password" id="loginPassword" placeholder="• • • • • • • •" />
               <button type="button" class="btn-toggle-eye"
                 onclick="togglePasswordVisibility('loginPassword', 'eyeIconMasuk')">
                 <i class="fa-regular fa-eye" id="eyeIconMasuk"></i>
               </button>
             </div>
+            <span class="field-error-msg" id="errLoginPassword"></span>
           </div>
 
           <div class="form-options-row">
@@ -85,6 +89,57 @@
           <p class="login-error-msg" id="errorMsgMasuk"></p>
         </form>
 
+        <!-- Form Daftar -->
+        <form class="login-form-fields" id="formDaftar" onsubmit="handleRegister(event)" style="display:none;"
+          novalidate>
+          <div class="form-group-login">
+            <label for="registerNama">Nama Lengkap</label>
+            <div class="login-input-wrapper" id="wrapRegisterNama">
+              <i class="fa-regular fa-user"></i>
+              <input type="text" id="registerNama" placeholder="Contoh: Budi Santoso" />
+            </div>
+            <span class="field-error-msg" id="errRegisterNama"></span>
+          </div>
+
+          <div class="form-group-login">
+            <label for="registerContact">Email atau Nomor Telepon</label>
+            <div class="login-input-wrapper" id="wrapRegisterContact">
+              <i class="fa-regular fa-envelope"></i>
+              <input type="text" id="registerContact" placeholder="user@email.com atau 081234567890" />
+            </div>
+            <span class="field-error-msg" id="errRegisterContact"></span>
+          </div>
+
+          <div class="form-group-login">
+            <label for="registerPassword">Kata Sandi</label>
+            <div class="login-input-wrapper" id="wrapRegisterPassword">
+              <i class="fa-solid fa-lock"></i>
+              <input type="password" id="registerPassword" placeholder="Minimal 6 karakter" />
+              <button type="button" class="btn-toggle-eye"
+                onclick="togglePasswordVisibility('registerPassword', 'eyeIconDaftar')">
+                <i class="fa-regular fa-eye" id="eyeIconDaftar"></i>
+              </button>
+            </div>
+            <span class="field-error-msg" id="errRegisterPassword"></span>
+          </div>
+
+          <div class="form-group-login">
+            <label for="registerConfirmPassword">Konfirmasi Kata Sandi</label>
+            <div class="login-input-wrapper" id="wrapRegisterConfirmPassword">
+              <i class="fa-solid fa-shield-halved"></i>
+              <input type="password" id="registerConfirmPassword" placeholder="Ulangi kata sandi" />
+              <button type="button" class="btn-toggle-eye"
+                onclick="togglePasswordVisibility('registerConfirmPassword', 'eyeIconConfirm')">
+                <i class="fa-regular fa-eye" id="eyeIconConfirm"></i>
+              </button>
+            </div>
+            <span class="field-error-msg" id="errRegisterConfirmPassword"></span>
+          </div>
+
+          <button type="submit" class="btn-submit-action" style="margin-top:15px;">Daftar Sekarang</button>
+          <p class="login-error-msg" id="errorMsgDaftar"></p>
+        </form>
+
         <!-- Divider -->
         <div class="social-divider">
           <span>Atau gunakan</span>
@@ -92,7 +147,7 @@
 
         <!-- Social Buttons -->
         <div class="social-auth-buttons">
-          <button type="button" class="btn-social google-btn">
+          <button type="button" class="btn-social google-btn" id="btnGoogleSignIn" onclick="triggerGoogleSignIn()">
             <img src="https://img.icons8.com/color/16/000000/google-logo.png" alt="Google icon" /> Google
           </button>
           <button type="button" class="btn-social facebook-btn">
@@ -161,41 +216,334 @@
     // ===== HANDLE TAB SWITCH =====
     const tabMasuk = document.getElementById('tabMasuk');
     const tabDaftar = document.getElementById('tabDaftar');
+    const formMasuk = document.getElementById('formMasuk');
+    const formDaftar = document.getElementById('formDaftar');
 
     tabMasuk.addEventListener('click', () => {
       tabMasuk.classList.add('active');
       tabDaftar.classList.remove('active');
-      document.querySelector('.forgot-password-link').style.visibility = 'visible';
-      document.querySelector('.remember-me-label').style.visibility = 'visible';
-      document.querySelector('.btn-submit-action').textContent = 'Masuk Sekarang';
+      formMasuk.style.display = 'block';
+      formDaftar.style.display = 'none';
     });
 
     tabDaftar.addEventListener('click', () => {
       tabDaftar.classList.add('active');
       tabMasuk.classList.remove('active');
-      document.querySelector('.forgot-password-link').style.visibility = 'hidden';
-      document.querySelector('.remember-me-label').style.visibility = 'hidden';
-      document.querySelector('.btn-submit-action').textContent = 'Daftar Sekarang';
+      formDaftar.style.display = 'block';
+      formMasuk.style.display = 'none';
     });
 
+    function clearErrors() {
+      document.querySelectorAll('.field-error-msg').forEach(el => el.textContent = '');
+      document.querySelectorAll('.login-error-msg').forEach(el => el.textContent = '');
+      document.querySelectorAll('.login-input-wrapper').forEach(el => el.classList.remove('input-error'));
+    }
+
     // ===== HANDLE LOGIN FUNCTION =====
-    function handleLogin(event) {
+    async function handleLogin(event) {
       event.preventDefault();
+      clearErrors();
+
+      const wrapEmail = document.getElementById('wrapLoginEmail');
+      const wrapPw = document.getElementById('wrapLoginPassword');
       const email = document.getElementById('loginEmail').value.trim();
       const pw = document.getElementById('loginPassword').value;
-      const errorMsg = document.getElementById('errorMsgMasuk');
 
-      if (!email || !pw) {
-        errorMsg.textContent = "Email dan kata sandi wajib diisi!";
+      let hasError = false;
+
+      if (!email) {
+        document.getElementById('errLoginEmail').textContent = "Email atau Nomor Telepon wajib diisi!";
+        wrapEmail.classList.add('input-error');
+        hasError = true;
+      }
+
+      if (!pw) {
+        document.getElementById('errLoginPassword').textContent = "Kata sandi wajib diisi!";
+        wrapPw.classList.add('input-error');
+        hasError = true;
+      }
+
+      if (hasError) return;
+
+      const API_BASE = window.API_BASE || (window.location.pathname.includes('/MPTI/') ? '/MPTI/rmpdg-backend/api' : '/rmpdg-backend/api');
+
+      try {
+        const response = await fetch(`${API_BASE}/auth.php`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'same-origin',
+          body: JSON.stringify({ email, password: pw })
+        });
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          if (result.is_admin) {
+            localStorage.setItem('admin_logged_in', 'true');
+            localStorage.setItem('admin_email', email);
+            window.location.href = 'admin/dashboard.php';
+          } else {
+            localStorage.setItem('is_logged_in', 'true');
+            localStorage.setItem('user_name', result.user?.nama || email);
+            localStorage.setItem('user_contact', result.user?.kontak || email);
+
+            const redirectTarget = localStorage.getItem('redirect_after_login') || 'index.html';
+            localStorage.removeItem('redirect_after_login');
+            window.location.href = redirectTarget;
+          }
+          return;
+        } else {
+          document.getElementById('errLoginEmail').textContent = result.error || 'Email/No. Telepon atau kata sandi tidak ditemukan!';
+          document.getElementById('errorMsgMasuk').innerHTML =
+            `Belum punya akun? <a href="javascript:void(0)" onclick="switchToRegister('${email.replace(/'/g, "\\'")}')" style="color:#d32f2f; text-decoration:underline; font-weight:800; cursor:pointer;">Daftar Akun Sekarang &raquo;</a>`;
+          wrapEmail.classList.add('input-error');
+          wrapPw.classList.add('input-error');
+          return;
+        }
+      } catch (err) {
+        console.warn('API Auth fetch error:', err);
+        document.getElementById('errLoginEmail').textContent = 'Gagal terhubung ke server autentikasi.';
+        wrapEmail.classList.add('input-error');
+      }
+    }
+
+    // Helper: Beralih otomatis ke Tab Daftar & isi email/phone yang diinput
+    function switchToRegister(contactValue) {
+      const tabDaftar = document.getElementById('tabDaftar');
+      if (tabDaftar) tabDaftar.click();
+      const regContact = document.getElementById('registerContact');
+      if (regContact && contactValue) {
+        regContact.value = contactValue;
+      }
+      const regNama = document.getElementById('registerNama');
+      if (regNama) regNama.focus();
+    }
+
+    // ===== HANDLE REGISTER FUNCTION =====
+    async function handleRegister(event) {
+      event.preventDefault();
+      clearErrors();
+
+      const wrapNama = document.getElementById('wrapRegisterNama');
+      const wrapContact = document.getElementById('wrapRegisterContact');
+      const wrapPw = document.getElementById('wrapRegisterPassword');
+      const wrapConfirmPw = document.getElementById('wrapRegisterConfirmPassword');
+
+      const nama = document.getElementById('registerNama').value.trim();
+      const contact = document.getElementById('registerContact').value.trim();
+      const pw = document.getElementById('registerPassword').value;
+      const confirmPw = document.getElementById('registerConfirmPassword').value;
+
+      let hasError = false;
+
+      if (!nama) {
+        document.getElementById('errRegisterNama').textContent = "Nama lengkap wajib diisi!";
+        wrapNama.classList.add('input-error');
+        hasError = true;
+      }
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const phoneRegex = /^[0-9+ \-]{8,15}$/;
+
+      const isValidEmail = emailRegex.test(contact);
+      const isValidPhone = phoneRegex.test(contact);
+
+      if (!contact) {
+        document.getElementById('errRegisterContact').textContent = "Email atau Nomor Telepon wajib diisi!";
+        wrapContact.classList.add('input-error');
+        hasError = true;
+      } else if (!isValidEmail && !isValidPhone) {
+        document.getElementById('errRegisterContact').textContent = "Format tidak valid! Masukkan Email (user@gmail.com) atau No. Telepon (081234567890) yang benar.";
+        wrapContact.classList.add('input-error');
+        hasError = true;
+      }
+
+      if (!pw) {
+        document.getElementById('errRegisterPassword').textContent = "Kata sandi wajib diisi!";
+        wrapPw.classList.add('input-error');
+        hasError = true;
+      } else if (pw.length < 6) {
+        document.getElementById('errRegisterPassword').textContent = "Kata sandi minimal 6 karakter!";
+        wrapPw.classList.add('input-error');
+        hasError = true;
+      }
+
+      if (!confirmPw) {
+        document.getElementById('errRegisterConfirmPassword').textContent = "Konfirmasi kata sandi wajib diisi!";
+        wrapConfirmPw.classList.add('input-error');
+        hasError = true;
+      } else if (pw && pw !== confirmPw) {
+        document.getElementById('errRegisterConfirmPassword').textContent = "Konfirmasi kata sandi tidak cocok!";
+        wrapConfirmPw.classList.add('input-error');
+        hasError = true;
+      }
+
+      if (hasError) return;
+
+      const API_BASE = window.API_BASE || (window.location.pathname.includes('/MPTI/') ? '/MPTI/rmpdg-backend/api' : '/rmpdg-backend/api');
+
+      try {
+        const response = await fetch(`${API_BASE}/register.php`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'same-origin',
+          body: JSON.stringify({ nama, kontak: contact, password: pw })
+        });
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+          if (result.error && result.error.toLowerCase().includes('terdaftar')) {
+            document.getElementById('errRegisterContact').textContent = result.error;
+            wrapContact.classList.add('input-error');
+          } else {
+            document.getElementById('errorMsgDaftar').textContent = result.error || 'Pendaftaran gagal! Silakan coba lagi.';
+          }
+          return;
+        }
+
+        // Simpan sesi login lokal & beri notifikasi sukses
+        localStorage.setItem('is_logged_in', 'true');
+        localStorage.setItem('user_name', nama);
+        localStorage.setItem('user_contact', contact);
+
+        alert(`Pendaftaran Akun Berhasil!\n\nSelamat datang, ${nama}. Akun Anda telah aktif.`);
+        const redirectTarget = localStorage.getItem('redirect_after_login') || 'index.html';
+        localStorage.removeItem('redirect_after_login');
+        window.location.href = redirectTarget;
+
+      } catch (err) {
+        console.error('API Register error:', err);
+        document.getElementById('errorMsgDaftar').textContent = 'Gagal terhubung ke server. Mohon periksa koneksi Anda dan coba lagi.';
+      }
+    }
+
+    // ===== GOOGLE SIGN-IN =====
+    const GOOGLE_CLIENT_ID = '298645737080-235m7e1aff86isk4bmc2siv8edc4bv9c.apps.googleusercontent.com';
+    const API_BASE_GOOGLE = window.API_BASE || (window.location.pathname.includes('/MPTI/') ? '/MPTI/rmpdg-backend/api' : '/rmpdg-backend/api');
+
+    function triggerGoogleSignIn() {
+      if (GOOGLE_CLIENT_ID === 'MASUKKAN_CLIENT_ID_GOOGLE_ANDA_DISINI') {
+        alert('⚠️ Google Sign-In belum dikonfigurasi.\n\nMinta developer untuk memasukkan Google Client ID di file login.html.');
+        return;
+      }
+      if (typeof google === 'undefined' || !google.accounts) {
+        alert('⚠️ Library Google Sign-In sedang dimuat. Silakan pastikan koneksi internet terhubung dan coba lagi.');
         return;
       }
 
-      // Demo: Jika user admin masuk ke dashboard admin, jika user lain bisa masuk ke menu
-      if (email === 'admin@rmpadang.com' && pw === 'admin123') {
-        window.location.href = 'admin/dashboard.html';
-      } else {
-        alert("Selamat datang, Anda berhasil masuk!");
-        window.location.href = 'index.html';
+      // 1. Coba OAuth2 Token Client terlebih dahulu (Pop-up Google langsung terbuka saat diklik)
+      if (google.accounts.oauth2 && typeof google.accounts.oauth2.initTokenClient === 'function') {
+        const client = google.accounts.oauth2.initTokenClient({
+          client_id: GOOGLE_CLIENT_ID,
+          scope: 'email profile',
+          callback: async (tokenResponse) => {
+            if (tokenResponse.error) {
+              console.error('Google OAuth Error:', tokenResponse);
+              return;
+            }
+            if (tokenResponse.access_token) {
+              await processGoogleAccessToken(tokenResponse.access_token);
+            }
+          }
+        });
+        client.requestAccessToken();
+        return;
+      }
+
+      // 2. Fallback GIS ID Prompt
+      google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleGoogleCredential,
+        ux_mode: 'popup'
+      });
+      google.accounts.id.prompt();
+    }
+
+    async function processGoogleAccessToken(accessToken) {
+      const btn = document.getElementById('btnGoogleSignIn');
+      const origText = btn.innerHTML;
+      btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Memproses...';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(`${API_BASE_GOOGLE}/google-auth.php`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'same-origin',
+          body: JSON.stringify({ access_token: accessToken })
+        });
+
+        const result = await res.json();
+
+        if (!res.ok || !result.success) {
+          alert('Login Google gagal: ' + (result.error || 'Silakan coba lagi.'));
+          return;
+        }
+
+        // Simpan sesi login ke localStorage
+        localStorage.setItem('is_logged_in', 'true');
+        localStorage.setItem('user_name', result.user.nama);
+        localStorage.setItem('user_contact', result.user.kontak);
+        if (result.user.foto) {
+          localStorage.setItem('user_photo', result.user.foto);
+        }
+
+        const redirectTarget = localStorage.getItem('redirect_after_login') || 'index.html';
+        localStorage.removeItem('redirect_after_login');
+        window.location.href = redirectTarget;
+
+      } catch (err) {
+        alert('Terjadi kesalahan jaringan: ' + err.message);
+      } finally {
+        btn.innerHTML = origText;
+        btn.disabled = false;
+      }
+    }
+
+    async function handleGoogleCredential(response) {
+      const idToken = response.credential;
+      if (!idToken) {
+        alert('Gagal mendapatkan token dari Google.');
+        return;
+      }
+
+      // Tampilkan loading
+      const btn = document.getElementById('btnGoogleSignIn');
+      const origText = btn.innerHTML;
+      btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Memproses...';
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(`${API_BASE_GOOGLE}/google-auth.php`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'same-origin',
+          body: JSON.stringify({ id_token: idToken })
+        });
+
+        const result = await res.json();
+
+        if (!res.ok || !result.success) {
+          alert('Login Google gagal: ' + (result.error || 'Silakan coba lagi.'));
+          return;
+        }
+
+        // Simpan sesi login ke localStorage
+        localStorage.setItem('is_logged_in', 'true');
+        localStorage.setItem('user_name', result.user.nama);
+        localStorage.setItem('user_contact', result.user.kontak);
+        if (result.user.foto) {
+          localStorage.setItem('user_photo', result.user.foto);
+        }
+
+        const redirectTarget = localStorage.getItem('redirect_after_login') || 'index.html';
+        localStorage.removeItem('redirect_after_login');
+        window.location.href = redirectTarget;
+
+      } catch (err) {
+        alert('Terjadi kesalahan jaringan: ' + err.message);
+      } finally {
+        btn.innerHTML = origText;
+        btn.disabled = false;
       }
     }
   </script>

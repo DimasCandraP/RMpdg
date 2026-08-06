@@ -2,11 +2,39 @@
    ===== GAYA VISUAL BARU HALAMAN KONTAK (kontak.html) =====
    ========================================================================== */
 
-.kontak-page-body {
-    background: #FAF8F6;
+/* ===== BREADCRUMB ===== */
+.breadcrumb {
+    padding: 10px 32px;
+    font-size: 0.82rem;
+    color: var(--text-gray);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--light);
+    border-bottom: 1px solid #eee;
+}
+
+.breadcrumb a {
+    color: var(--text-gray);
+}
+
+.breadcrumb a:hover {
+    color: var(--primary);
+}
+
+.breadcrumb .sep {
+    color: #aaa;
+}
+
+/* Background khusus kontak — terapkan ke section kontak saja, bukan body */
+.kontak-intro-section,
+.kontak-cards-section,
+.kontak-map-section,
+.kontak-footer {
     font-family: 'Inter', sans-serif;
     color: var(--text-dark);
 }
+
 
 /* ===== INTRO SECTION ===== */
 .kontak-intro-section {
@@ -68,11 +96,13 @@
 }
 
 .kontak-badge-item .fa-phone {
-    color: #A8761E; /* Gold/brown */
+    color: #A8761E;
+    /* Gold/brown */
 }
 
 .kontak-badge-item .fa-whatsapp {
-    color: #25D366; /* Green */
+    color: #25D366;
+    /* Green */
 }
 
 /* ===== GRID SECTION ===== */
@@ -422,8 +452,15 @@
 }
 
 @keyframes pinPulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
 }
 
 .map-card-overlay {
@@ -535,9 +572,28 @@
 }
 
 .delivery-cta-buttons {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 12px;
-    flex-wrap: wrap;
+}
+
+.delivery-cta-buttons a:nth-child(4),
+.delivery-cta-buttons a:nth-child(5) {
+    grid-column: span 1;
+}
+
+.delivery-cta-buttons a:nth-last-child(2):nth-child(4),
+.delivery-cta-buttons a:nth-last-child(1):nth-child(5) {
+    grid-column: span 1;
+}
+
+/* Bila 5 tombol: baris ke-2 ditengahkan (2 tombol di tengah dari 3 kolom) */
+.delivery-cta-buttons a:nth-child(4) {
+    grid-column: 1 / 2;
+}
+
+.delivery-cta-buttons a:nth-child(5) {
+    grid-column: 2 / 3;
 }
 
 .btn-delivery-wa {

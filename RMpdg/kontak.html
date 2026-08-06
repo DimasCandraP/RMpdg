@@ -12,28 +12,29 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
 </head>
 
-<body class="kontak-page-body">
+<body>
 
   <!-- ===== NAVBAR ===== -->
   <nav class="navbar">
     <div class="nav-brand">
-      <img src="img/logo.png" alt="Logo" class="logo" />
+      <img src="img/logo.png" alt="Logo RM Padang" class="logo" />
       <div>
-        <span class="brand-name">RM PADANG</span>
-        <span class="brand-sub">Rumah Makan Padang</span>
+        <span class="brand-name">Rumah Makan Padang</span>
+        <span class="brand-sub">Resto Pesona Kapau</span>
       </div>
     </div>
     <ul class="nav-links">
       <li><a href="index.html">BERANDA</a></li>
       <li><a href="menu.html">MENU</a></li>
-      <li><a href="catering.html">CATERING</a></li>
       <li><a href="reservasi.html">RESERVASI</a></li>
       <li><a href="promosi.html">PROMOSI</a></li>
       <li><a href="tentang-kami.html">TENTANG KAMI</a></li>
       <li><a href="kontak.html" class="active">KONTAK</a></li>
     </ul>
     <a href="login.html" class="btn-login">Login</a>
-    <button class="nav-toggle" id="navToggle"><i class="fa fa-bars"></i></button>
+    <button class="nav-toggle" id="navToggle">
+      <i class="fa fa-bars"></i>
+    </button>
   </nav>
 
   <!-- ===== BREADCRUMB ===== -->
@@ -91,9 +92,9 @@
             <div class="select-wrapper">
               <select id="subjekPesan" required>
                 <option value="Tanya Menu">Tanya Menu</option>
-                <option value="Pesan Catering">Pesan Catering</option>
                 <option value="Reservasi Meja">Reservasi Meja</option>
-                <option value="Kritik & Saran">Kritik & Saran</option>
+                <option value="Pemesanan Nasi Box">Pemesanan Nasi Box</option>
+                <option value="Kritik &amp; Saran">Kritik &amp; Saran</option>
               </select>
             </div>
           </div>
@@ -104,7 +105,7 @@
           </div>
 
           <button type="submit" class="btn-send-message">
-            <i class="fa-solid fa-play"></i> Kirim Pesan Sekarang
+            Kirim Pesan Sekarang
           </button>
         </form>
       </div>
@@ -212,13 +213,24 @@
       <div class="delivery-cta-left">
         <h2>Ingin Menikmati Hidangan Kami di Rumah?</h2>
         <p>
-          Pesan sekarang melalui WhatsApp atau aplikasi delivery favorit Anda. Kami menjamin kualitas rasa tetap terjaga
+          Pesan sekarang melalui WhatsApp atau platform delivery favorit Anda. Kami menjamin kualitas rasa tetap terjaga
           sampai di meja makan Anda.
         </p>
       </div>
       <div class="delivery-cta-buttons">
         <a href="https://wa.me/6281234567890" target="_blank" class="btn-delivery-wa">
           <i class="fa-brands fa-whatsapp"></i> Pesan via WhatsApp
+        </a>
+        <a href="#" target="_blank" class="btn-delivery-menu"
+          style="background:#00AED6;color:#fff;border-color:#00AED6;">
+          <i class="fa-solid fa-motorcycle"></i> Pesan via Gojek
+        </a>
+        <a href="#" target="_blank" class="btn-delivery-menu"
+          style="background:#EE4D2D;color:#fff;border-color:#EE4D2D;">
+          <i class="fa-solid fa-bag-shopping"></i> Pesan via Shopee
+        </a>
+        <a href="#" target="_blank" class="btn-delivery-menu" style="background:#000;color:#fff;border-color:#000;">
+          <i class="fa-brands fa-tiktok"></i> Lihat di TikTok
         </a>
         <a href="menu.html" class="btn-delivery-menu">
           <i class="fa-regular fa-file-lines"></i> Lihat Menu Online
@@ -234,12 +246,15 @@
       <div class="kfooter-col-brand">
         <h4 class="kfooter-brand-title">RM Padang</h4>
         <p class="kfooter-brand-desc">
-          Menyajikan kelezatan otentik masakan Padang dengan bahan pilihan terbaik sejak tahun 1990.
+          Menyajikan kelezatan otentik masakan Padang dengan bahan pilihan terbaik sejak tahun 2025.
         </p>
         <div class="kfooter-social-icons">
           <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
           <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
-          <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+          <a href="https://wa.me/6281234567890" aria-label="WhatsApp" target="_blank"><i
+              class="fa-brands fa-whatsapp"></i></a>
+          <a href="#" aria-label="TikTok" target="_blank" title="Lihat di TikTok"><i
+              class="fa-brands fa-tiktok"></i></a>
         </div>
       </div>
 
@@ -248,9 +263,9 @@
         <ul class="kfooter-links-list">
           <li><a href="index.html">Beranda</a></li>
           <li><a href="menu.html">Menu Favorit</a></li>
-          <li><a href="catering.html">Layanan Catering</a></li>
           <li><a href="tentang-kami.html">Tentang Kami</a></li>
-          <li><a href="#">Karir</a></li>
+          <li><a href="reservasi.html">Reservasi</a></li>
+          <li><a href="promosi.html">Promosi</a></li>
         </ul>
       </div>
 
@@ -274,15 +289,42 @@
   <script src="js/main.js"></script>
   <script src="js/cart.js"></script>
   <script>
-    function handleContactSubmit(event) {
+    const API_BASE = window.API_BASE || (window.location.pathname.includes('/MPTI/') ? '/MPTI/rmpdg-backend/api' : '/rmpdg-backend/api');
+
+    async function handleContactSubmit(event) {
       event.preventDefault();
+
       const nama = document.getElementById('namaLengkap').value.trim();
-      const contact = document.getElementById('emailWhatsApp').value.trim();
+      const kontak = document.getElementById('emailWhatsApp').value.trim();
       const subjek = document.getElementById('subjekPesan').value;
       const pesan = document.getElementById('isiPesan').value.trim();
 
-      alert(`Terima kasih ${nama}!\nPesan Anda mengenai "${subjek}" telah terkirim.\nKami akan menghubungi Anda ke ${contact} sesegera mungkin.`);
-      document.getElementById('formKirimPesan').reset();
+      if (!nama || !kontak || !pesan) {
+        alert('Mohon lengkapi semua kolom yang wajib diisi.');
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE}/kontak.php`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            nama_lengkap: nama,
+            kontak_whatsapp: kontak,
+            subjek: subjek,
+            isi_pesan: pesan
+          })
+        });
+
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || 'Gagal mengirim pesan');
+
+        alert(`Terima kasih ${nama}!\nPesan Anda telah berhasil dikirim ke sistem kami.`);
+        document.getElementById('formKirimPesan').reset();
+
+      } catch (err) {
+        alert('Terjadi kesalahan: ' + err.message);
+      }
     }
 
     function handleSubscribe(event) {

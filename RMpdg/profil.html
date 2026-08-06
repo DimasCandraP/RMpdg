@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kelola Profil &amp; Akun - RM Padang</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/cart.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    .profil-container {
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .profil-grid {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 25px;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 850px) {
+      .profil-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .profil-card-sidebar {
+      background: #fff;
+      border-radius: 16px;
+      padding: 30px 20px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      border: 1px solid #eee;
+      height: fit-content;
+    }
+
+    .avatar-circle {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      color: #fff;
+      font-size: 2.5rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      box-shadow: 0 6px 16px rgba(139, 0, 0, 0.25);
+      border: 3px solid var(--secondary);
+    }
+
+    .profil-name {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #222;
+      margin-bottom: 4px;
+    }
+
+    .profil-contact-lbl {
+      font-size: 0.85rem;
+      color: #777;
+      margin-bottom: 14px;
+    }
+
+    .user-badge {
+      display: inline-block;
+      padding: 5px 14px;
+      background: #E8F8F0;
+      color: #27AE60;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .profil-card-main {
+      background: #fff;
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      border: 1px solid #eee;
+    }
+
+    .section-head-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #FAF6F4;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .profil-form-group {
+      margin-bottom: 20px;
+    }
+
+    .profil-form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #444;
+      margin-bottom: 6px;
+    }
+
+    .profil-form-group input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid #E5DFDA;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      background: #FAF6F4;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .profil-form-group input:focus {
+      border-color: var(--primary);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(139, 0, 0, 0.08);
+    }
+
+    .btn-save-profile {
+      background: var(--primary-dark);
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background 0.2s;
+    }
+
+    .btn-save-profile:hover {
+      background: var(--primary);
+    }
+
+    .tab-profil-nav {
+      display: flex;
+      gap: 8px;
+      border-bottom: 2px solid #eee;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .tab-p-btn {
+      background: none;
+      border: none;
+      padding: 10px 14px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: #777;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.2s;
+    }
+
+    .tab-p-btn.active {
+      color: var(--primary-dark);
+      border-bottom-color: var(--primary-dark);
+    }
+
+    /* HISTORY STYLES */
+    .history-card {
+      background: #fafafa;
+      border: 1px solid #eee;
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 16px;
+      transition: all 0.2s;
+    }
+
+    .history-card:hover {
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+      border-color: #ddd;
+    }
+
+    .badge-status {
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .status-pending {
+      background: #FFF9C4;
+      color: #F57F17;
+    }
+
+    .status-proses {
+      background: #E1F5FE;
+      color: #0288D1;
+    }
+
+    .status-selesai {
+      background: #E8F5E9;
+      color: #2E7D32;
+    }
+
+    .status-batal {
+      background: #FFEBEE;
+      color: #C62828;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-brand">
+      <img src="img/logo.png" alt="Logo RM Padang" class="logo" />
+      <div>
+        <span class="brand-name">Rumah Makan Padang</span>
+        <span class="brand-sub">Resto Pesona Kapau</span>
+      </div>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html">BERANDA</a></li>
+      <li><a href="menu.html">MENU</a></li>
+      <li><a href="reservasi.html">RESERVASI</a></li>
+      <li><a href="promosi.html">PROMOSI</a></li>
+      <li><a href="tentang-kami.html">TENTANG KAMI</a></li>
+      <li><a href="kontak.html">KONTAK</a></li>
+    </ul>
+    <a href="login.html" class="btn-login">Login</a>
+    <button class="nav-toggle" id="navToggle">
+      <i class="fa fa-bars"></i>
+    </button>
+  </nav>
+
+  <div class="profil-container">
+    <div style="margin-bottom: 10px;">
+      <h1 style="font-size: 1.8rem; font-weight: 900; color: var(--primary-dark);">Pengaturan Profil &amp; Riwayat Saya
+      </h1>
+      <p style="color: #777; font-size: 0.9rem;">Kelola informasi pribadi dan pantau status transaksi serta reservasi
+        Anda.</p>
+    </div>
+
+    <div class="profil-grid">
+
+      <!-- SIDEBAR KIRI (FOTO & SUMMARY) -->
+      <div class="profil-card-sidebar">
+        <div class="avatar-circle" id="userInitialAvatar">U</div>
+        <div class="profil-name" id="userDisplayName">Memuat...</div>
+        <div class="profil-contact-lbl" id="userDisplayContact">-</div>
+        <span class="user-badge"><i class="fa fa-shield-check"></i> Pelanggan Terverifikasi</span>
+
+        <div style="border-top:1px solid #eee; padding-top:16px; margin-top:16px; text-align:left;">
+          <div style="margin-bottom:10px; font-size:0.85rem; color:#555;">
+            <i class="fa fa-calendar-check" style="color:var(--primary); margin-right:8px;"></i> Total Transaksi:
+            <strong id="userTotalOrderCount">0</strong>
+          </div>
+          <div style="font-size:0.85rem; color:#555;">
+            <i class="fa fa-user-clock" style="color:var(--primary); margin-right:8px;"></i> Sesi Aktif:
+            <strong>Terhubung</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL KANAN (FORM & RIWAYAT) -->
+      <div class="profil-card-main">
+
+        <div class="tab-profil-nav">
+          <button class="tab-p-btn active" id="tabBio" onclick="switchProfilTab('bio')">
+            <i class="fa fa-user"></i> Biodata Diri
+          </button>
+          <button class="tab-p-btn" id="tabPesanan" onclick="switchProfilTab('pesanan')">
+            <i class="fa fa-utensils"></i> Riwayat Pesanan
+          </button>
+          <button class="tab-p-btn" id="tabReservasi" onclick="switchProfilTab('reservasi')">
+            <i class="fa fa-chair"></i> Riwayat Reservasi
+          </button>
+          <button class="tab-p-btn" id="tabSecurity" onclick="switchProfilTab('security')">
+            <i class="fa fa-lock"></i> Sandi
+          </button>
+        </div>
+
+        <!-- FORM BIODATA -->
+        <form id="formBio" onsubmit="handleUpdateBio(event)">
+          <div class="section-head-title">
+            <i class="fa fa-id-card"></i> Informasi Akun Pelanggan
+          </div>
+
+          <div class="profil-form-group">
+            <label for="profNama">Nama Lengkap <span style="color:#d32f2f;">*</span></label>
+            <input type="text" id="profNama" placeholder="Nama Lengkap Anda" required />
+          </div>
+
+          <div class="profil-form-group">
+            <label for="profKontak">Email atau Nomor Telepon <span style="color:#d32f2f;">*</span></label>
+            <input type="text" id="profKontak" placeholder="user@gmail.com atau 081234567890" required />
+          </div>
+
+          <div style="margin-top: 24px;">
+            <button type="submit" class="btn-save-profile">
+              <i class="fa fa-save"></i> Simpan Perubahan Profil
+            </button>
+          </div>
+        </form>
+
+        <!-- TAB RIWAYAT PESANAN MENU -->
+        <div id="sectionPesanan" style="display:none;">
+          <div class="section-head-title">
+            <i class="fa fa-receipt"></i> Riwayat Pesanan Makanan &amp; Minuman
+          </div>
+          <div id="listHistoryPesanan">
+            <p style="color:#888; text-align:center; padding:20px;">Memuat data pesanan...</p>
+          </div>
+        </div>
+
+        <!-- TAB RIWAYAT RESERVASI MEJA -->
+        <div id="sectionReservasi" style="display:none;">
+          <div class="section-head-title">
+            <i class="fa fa-calendar-alt"></i> Riwayat Reservasi Tempat / Meja
+          </div>
+          <div id="listHistoryReservasi">
+            <p style="color:#888; text-align:center; padding:20px;">Memuat data reservasi...</p>
+          </div>
+        </div>
+
+        <!-- FORM GANTI PASSWORD -->
+        <form id="formSecurity" onsubmit="handleChangePassword(event)" style="display:none;">
+          <div class="section-head-title">
+            <i class="fa fa-key"></i> Ubah Kata Sandi Akun
+          </div>
+
+          <div class="profil-form-group">
+            <label for="oldPassword">Kata Sandi Saat Ini <span style="color:#d32f2f;">*</span></label>
+            <input type="password" id="oldPassword" placeholder="• • • • • • • •" required />
+          </div>
+
+          <div class="profil-form-group">
+            <label for="newPassword">Kata Sandi Baru <span style="color:#d32f2f;">*</span></label>
+            <input type="password" id="newPassword" placeholder="Minimal 6 karakter" required />
+          </div>
+
+          <div class="profil-form-group">
+            <label for="confirmNewPassword">Konfirmasi Kata Sandi Baru <span style="color:#d32f2f;">*</span></label>
+            <input type="password" id="confirmNewPassword" placeholder="Ulangi kata sandi baru" required />
+          </div>
+
+          <div style="margin-top: 24px;">
+            <button type="submit" class="btn-save-profile" style="background:#27ae60;">
+              <i class="fa fa-shield-halved"></i> Perbarui Kata Sandi
+            </button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <img src="img/logo.png" alt="Logo" class="logo" />
+        <div>
+          <span class="brand-name">RM PADANG</span>
+          <span class="brand-sub">Rumah Makan Padang</span>
+        </div>
+      </div>
+      <p class="footer-desc">Nikmati hidangan khas Minang dengan bumbu pilihan dan cita rasa autentik.</p>
+    </div>
+    <div class="footer-links">
+      <h4>Halaman</h4>
+      <ul>
+        <li><a href="index.html">Beranda</a></li>
+        <li><a href="menu.html">Menu</a></li>
+        <li><a href="reservasi.html">Reservasi</a></li>
+        <li><a href="promosi.html">Promosi</a></li>
+      </ul>
+    </div>
+    <div class="footer-contact">
+      <h4>Kontak</h4>
+      <p><i class="fa fa-phone"></i> +62 812-3456-7890</p>
+      <p><i class="fa fa-envelope"></i> info@rmpadang.com</p>
+      <p><i class="fa fa-map-marker-alt"></i> Jl. Magelang - Yogyakarta</p>
+    </div>
+    <p class="footer-copy">© 2026 RM Padang. All rights reserved.</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/cart.js"></script>
+  <script>
+    const API_BASE = window.API_BASE || (window.location.pathname.includes('/MPTI/') ? '/MPTI/rmpdg-backend/api' : '/rmpdg-backend/api');
+
+    let currentContact = '';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const isLoggedIn = (localStorage.getItem('is_logged_in') === 'true' || sessionStorage.getItem('is_logged_in') === 'true') || (localStorage.getItem('admin_logged_in') === 'true' || sessionStorage.getItem('admin_logged_in') === 'true');
+      if (!isLoggedIn) {
+        alert('⚠️ Anda harus login terlebih dahulu untuk mengakses halaman profil!');
+        window.location.href = 'login.html';
+        return;
+      }
+
+      currentContact = (localStorage.getItem('user_contact') || sessionStorage.getItem('user_contact')) || sessionStorage.getItem('admin_email') || (localStorage.getItem('user_name') || sessionStorage.getItem('user_name')) || '';
+      const userName = (localStorage.getItem('user_name') || sessionStorage.getItem('user_name')) || sessionStorage.getItem('admin_email') || 'Pengguna';
+
+      // Load profil
+      document.getElementById('userDisplayName').textContent = userName;
+      document.getElementById('userDisplayContact').textContent = currentContact;
+      document.getElementById('userInitialAvatar').textContent = userName.charAt(0).toUpperCase();
+
+      document.getElementById('profNama').value = userName;
+      document.getElementById('profKontak').value = currentContact;
+
+      fetchProfileData();
+      loadUserHistory();
+      setInterval(loadUserHistory, 5000); // Real-time auto refresh setiap 5 detik
+    });
+
+    async function fetchProfileData() {
+      try {
+        const res = await fetch(`${API_BASE}/profil.php`, { credentials: 'same-origin' });
+        if (res.ok) {
+          const result = await res.json();
+          if (result.success && result.user) {
+            document.getElementById('userDisplayName').textContent = result.user.nama;
+            document.getElementById('userDisplayContact').textContent = result.user.kontak;
+            document.getElementById('userInitialAvatar').textContent = result.user.nama.charAt(0).toUpperCase();
+
+            document.getElementById('profNama').value = result.user.nama;
+            document.getElementById('profKontak').value = result.user.kontak;
+
+            localStorage.setItem('user_name', result.user.nama);
+            localStorage.setItem('user_contact', result.user.kontak);
+            sessionStorage.setItem('user_name', result.user.nama);
+            sessionStorage.setItem('user_contact', result.user.kontak);
+            currentContact = result.user.kontak;
+
+            if (typeof updateNavbarUserStatus === 'function') {
+              updateNavbarUserStatus();
+            }
+          }
+        }
+      } catch (err) {
+        console.warn('Load profile from DB error:', err);
+      }
+    }
+
+    function getUploadUrl(fileName) {
+      if (!fileName) return '';
+      const path = window.location.pathname;
+      if (path.includes('/MPTI/')) return `/MPTI/rmpdg-backend/uploads/${fileName}`;
+      return `/rmpdg-backend/uploads/${fileName}`;
+    }
+
+    function showBuktiModal(imgUrl) {
+      let overlay = document.getElementById('buktiImageOverlay');
+      if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'buktiImageOverlay';
+        overlay.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); display:flex; align-items:center; justify-content:center; z-index:99999; flex-direction:column; padding:20px;';
+        overlay.innerHTML = `
+          <div style="position:relative; max-width:90vw; max-height:85vh; text-align:center;">
+            <button onclick="document.getElementById('buktiImageOverlay').style.display='none'" style="position:absolute; top:-15px; right:-15px; background:#d32f2f; color:#fff; border:none; width:36px; height:36px; border-radius:50%; font-size:1.2rem; font-weight:bold; cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,0.3);">&times;</button>
+            <img id="buktiImageModalTag" src="" style="max-width:100%; max-height:75vh; border-radius:8px; box-shadow:0 8px 32px rgba(0,0,0,0.5); object-fit:contain; background:#fff;" />
+            <div style="margin-top:14px;">
+              <a id="buktiImageLinkTag" href="#" target="_blank" style="color:#fff; background:var(--primary,#8B0000); padding:8px 18px; border-radius:6px; text-decoration:none; font-weight:bold; font-size:0.88rem; display:inline-block;">
+                <i class="fa fa-external-link-alt"></i> Buka Gambar di Tab Baru ↗
+              </a>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(overlay);
+        overlay.addEventListener('click', (e) => {
+          if (e.target === overlay) overlay.style.display = 'none';
+        });
+      }
+      document.getElementById('buktiImageModalTag').src = imgUrl;
+      document.getElementById('buktiImageLinkTag').href = imgUrl;
+      overlay.style.display = 'flex';
+    }
+
+    async function loadUserHistory() {
+      const user = JSON.parse(localStorage.getItem('user_data') || sessionStorage.getItem('user_data') || '{}');
+      const userName = localStorage.getItem('user_name') || sessionStorage.getItem('user_name') || user.nama || '';
+      const currentContact = localStorage.getItem('user_contact') || sessionStorage.getItem('user_contact') || user.telepon || user.email || userName || '';
+
+      if (!currentContact && !userName) return;
+      let totalCount = 0;
+
+      // Helper untuk query API dengan fallback jika query pertama kosong
+      async function fetchHistoryData(endpoint) {
+        try {
+          let res = await fetch(`${API_BASE}/${endpoint}?kontak=${encodeURIComponent(currentContact)}&_t=${Date.now()}`, { credentials: 'same-origin' });
+          let data = res.ok ? await res.json() : [];
+          if ((!Array.isArray(data) || data.length === 0) && userName && userName !== currentContact) {
+            let res2 = await fetch(`${API_BASE}/${endpoint}?kontak=${encodeURIComponent(userName)}&_t=${Date.now()}`, { credentials: 'same-origin' });
+            if (res2.ok) data = await res2.json();
+          }
+          return Array.isArray(data) ? data : [];
+        } catch (e) {
+          return [];
+        }
+      }
+
+      // 1. Pesanan Menu
+      const dataPesanan = await fetchHistoryData('pesanan_menu.php');
+      const containerPesanan = document.getElementById('listHistoryPesanan');
+      if (dataPesanan.length > 0) {
+        totalCount += dataPesanan.length;
+        containerPesanan.innerHTML = dataPesanan.map(item => {
+          let badgeStatusClass = (item.status || 'pending').toLowerCase();
+          let statusLabel = item.status || 'Pending';
+          if (badgeStatusClass === 'dikonfirmasi' || badgeStatusClass === 'diproses') badgeStatusClass = 'proses';
+          if (badgeStatusClass === 'dibatalkan') badgeStatusClass = 'batal';
+
+          const itemsText = Array.isArray(item.items) && item.items.length > 0
+            ? item.items.map(i => `${i.nama_menu || i.nama || 'Menu'} (x${i.jumlah || i.qty || 1})`).join(', ')
+            : '';
+
+          return `
+            <div class="history-card" style="border-left:4px solid var(--primary-dark,#8B0000); background:#fff; box-shadow:0 2px 10px rgba(0,0,0,0.04); margin-bottom:16px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+                <div>
+                  <strong style="color:var(--primary-dark); font-size:1rem;">Kode: ${item.kode_pesanan || ('#' + item.id)}</strong>
+                  <span style="font-size:0.8rem; color:#888; margin-left:10px;"><i class="fa fa-clock"></i> ${item.waktu_daftar || '-'}</span>
+                </div>
+                <span class="badge-status status-${badgeStatusClass}">${statusLabel}</span>
+              </div>
+              <div style="font-size:0.88rem; color:#444; margin-bottom:6px;">
+                Tipe: <strong>${item.order_type || 'Takeaway'}</strong> | Metode: <strong>${item.metode_bayar || 'Transfer'}</strong>
+              </div>
+              ${itemsText ? `<div style="font-size:0.85rem; color:#333; margin-bottom:8px; background:#FAF6F4; padding:8px 12px; border-radius:6px; border:1px solid #eee;"><strong>Item:</strong> ${itemsText}</div>` : ''}
+              <div style="font-size:0.82rem; color:#666; margin-bottom:10px;">
+                <i class="fa fa-location-dot" style="color:var(--primary);"></i> Lokasi: ${item.lokasi || '-'}
+              </div>
+              <div style="border-top:1px dashed #ddd; padding-top:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+                <span style="font-size:1rem; font-weight:800; color:#222;">Total: Rp ${(parseInt(item.total) || 0).toLocaleString('id-ID')}</span>
+                ${item.bukti_bayar ? `<a href="${getUploadUrl(item.bukti_bayar)}" onclick="showBuktiModal('${getUploadUrl(item.bukti_bayar)}'); return false;" style="color:var(--primary); font-size:0.85rem; font-weight:700; text-decoration:none; background:#FFF0F0; padding:6px 12px; border-radius:6px; border:1px solid #FFCDD2;"><i class="fa fa-image"></i> Lihat Bukti Bayar ↗</a>` : '<span style="font-size:0.8rem; color:#999;">Belum ada bukti</span>'}
+              </div>
+            </div>
+          `;
+        }).join('');
+      } else {
+        containerPesanan.innerHTML = '<p style="color:#888; text-align:center; padding:30px; background:#f9f9f9; border-radius:12px; border:1.5px dashed #eee;"><i class="fa fa-utensils" style="font-size:2rem; color:#ccc; display:block; margin-bottom:8px;"></i>Belum ada riwayat pesanan makanan.</p>';
+      }
+
+      // 2. Reservasi
+      const dataReservasi = await fetchHistoryData('reservasi.php');
+      const containerReservasi = document.getElementById('listHistoryReservasi');
+      if (dataReservasi.length > 0) {
+        totalCount += dataReservasi.length;
+        containerReservasi.innerHTML = dataReservasi.map(item => {
+          let badgeStatusClass = (item.status || 'pending').toLowerCase();
+          if (badgeStatusClass === 'dikonfirmasi') badgeStatusClass = 'proses';
+          if (badgeStatusClass === 'dibatalkan') badgeStatusClass = 'batal';
+
+          return `
+            <div class="history-card" style="border-left:4px solid #E67E22; background:#fff; box-shadow:0 2px 10px rgba(0,0,0,0.04); margin-bottom:16px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+                <div>
+                  <strong style="color:var(--primary-dark); font-size:1rem;">Kode: ${item.kode_reservasi || ('#' + item.id)}</strong>
+                  <span style="font-size:0.8rem; color:#888; margin-left:10px;"><i class="fa fa-calendar"></i> ${item.tanggal} jam ${item.jam}</span>
+                </div>
+                <span class="badge-status status-${badgeStatusClass}">${item.status || 'pending'}</span>
+              </div>
+              <div style="font-size:0.88rem; color:#444;">
+                Acara: <strong>${item.jenis_acara || 'Makan Biasa'}</strong> | Tamu: <strong>${item.jumlah_tamu} Orang</strong>
+              </div>
+              ${item.catatan ? `<div style="font-size:0.82rem; color:#777; margin-top:6px; background:#FAF6F4; padding:6px 10px; border-radius:6px; border:1px solid #eee;">Catatan: ${item.catatan}</div>` : ''}
+            </div>
+          `;
+        }).join('');
+      } else {
+        containerReservasi.innerHTML = '<p style="color:#888; text-align:center; padding:30px; background:#f9f9f9; border-radius:12px; border:1.5px dashed #eee;"><i class="fa fa-chair" style="font-size:2rem; color:#ccc; display:block; margin-bottom:8px;"></i>Belum ada riwayat reservasi tempat.</p>';
+      }
+
+      document.getElementById('userTotalOrderCount').textContent = totalCount;
+    }
+
+    function switchProfilTab(tab) {
+      document.getElementById('tabBio').classList.toggle('active', tab === 'bio');
+      document.getElementById('tabPesanan').classList.toggle('active', tab === 'pesanan');
+      document.getElementById('tabReservasi').classList.toggle('active', tab === 'reservasi');
+      document.getElementById('tabSecurity').classList.toggle('active', tab === 'security');
+
+      document.getElementById('formBio').style.display = tab === 'bio' ? 'block' : 'none';
+      document.getElementById('sectionPesanan').style.display = tab === 'pesanan' ? 'block' : 'none';
+      document.getElementById('sectionReservasi').style.display = tab === 'reservasi' ? 'block' : 'none';
+      document.getElementById('formSecurity').style.display = tab === 'security' ? 'block' : 'none';
+    }
+
+    async function handleUpdateBio(event) {
+      event.preventDefault();
+      const nama = document.getElementById('profNama').value.trim();
+      const newKontak = document.getElementById('profKontak').value.trim();
+
+      if (!nama || !newKontak) {
+        alert('Nama Lengkap dan Kontak tidak boleh kosong!');
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/profil.php`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'same-origin',
+          body: JSON.stringify({
+            action: 'update_profile',
+            kontak: currentContact,
+            nama: nama,
+            new_kontak: newKontak
+          })
+        });
+
+        const result = await res.json();
+        if (!res.ok) throw new Error(result.error || 'Gagal merubah profil');
+
+        localStorage.setItem('user_name', nama);
+        localStorage.setItem('user_contact', newKontak);
+        sessionStorage.setItem('user_name', nama);
+        sessionStorage.setItem('user_contact', newKontak);
+        currentContact = newKontak;
+
+        alert('Profil berhasil diperbarui!');
+        window.location.reload();
+
+      } catch (err) {
+        alert('Terjadi kesalahan: ' + err.message);
+      }
+    }
+
+    async function handleChangePassword(event) {
+      event.preventDefault();
+      const oldPw = document.getElementById('oldPassword').value;
+      const newPw = document.getElementById('newPassword').value;
+      const confirmNewPw = document.getElementById('confirmNewPassword').value;
+
+      if (!oldPw || !newPw || !confirmNewPw) {
+        alert('Semua bidang kata sandi wajib diisi!');
+        return;
+      }
+
+      if (newPw.length < 6) {
+        alert('Kata sandi baru minimal 6 karakter!');
+        return;
+      }
+
+      if (newPw !== confirmNewPw) {
+        alert('Konfirmasi kata sandi baru tidak cocok!');
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/profil.php`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'same-origin',
+          body: JSON.stringify({
+            action: 'change_password',
+            kontak: currentContact,
+            old_password: oldPw,
+            new_password: newPw
+          })
+        });
+
+        const result = await res.json();
+        if (!res.ok) throw new Error(result.error || 'Gagal memperbarui kata sandi');
+
+        alert('Kata sandi berhasil diubah!');
+        document.getElementById('oldPassword').value = '';
+        document.getElementById('newPassword').value = '';
+        document.getElementById('confirmNewPassword').value = '';
+
+      } catch (err) {
+        alert('Gagal: ' + err.message);
+      }
+    }
+  </script>
+</body>
+
+</html>
