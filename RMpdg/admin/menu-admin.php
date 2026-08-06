@@ -56,24 +56,19 @@
 
             <div class="table-toolbar">
                 <div class="toolbar-left">
-                    <select id="filterKategori">
+                    <select id="filterKategori" onchange="filterAndRenderMenu()">
                         <option value="">Semua Kategori</option>
-                        <option>Makanan Utama</option>
-                        <option>Aneka Lauk</option>
-                        <option>Aneka Sayur</option>
-                        <option>Minuman</option>
-                        <option>Tambahan</option>
                     </select>
-                    <select id="filterTersedia">
+                    <select id="filterTersedia" onchange="filterAndRenderMenu()">
                         <option value="">Semua Status</option>
-                        <option value="1">Tersedia</option>
-                        <option value="0">Tidak Tersedia</option>
+                        <option value="aktif">Tersedia (Aktif)</option>
+                        <option value="nonaktif">Tidak Tersedia (Nonaktif)</option>
                     </select>
                 </div>
                 <div class="toolbar-right">
                     <div class="search-box">
                         <i class="fa fa-search"></i>
-                        <input type="text" placeholder="Cari menu..." />
+                        <input type="text" id="searchMenu" placeholder="Cari menu..." oninput="filterAndRenderMenu()" />
                     </div>
                 </div>
             </div>
@@ -401,6 +396,7 @@
         const API_BASE = window.API_BASE || (window.location.pathname.includes('/MPTI/') ? '/MPTI/rmpdg-backend/api' : '/rmpdg-backend/api');
 
         let menuList = [];
+        let categoryList = [];
 
         async function doLogout() {
             if (!confirm('Yakin ingin logout?')) return;
@@ -411,47 +407,104 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            loadMenuAdmin();
+            loadCategoriesAdmin().then(() => {
+                loadMenuAdmin();
+            });
         });
+
+        async function loadCategoriesAdmin() {
+            try {
+                const res = await fetch(`${API_BASE}/kategori.php`, { credentials: 'same-origin' });
+                if (!res.ok) return;
+                categoryList = await res.json();
+                
+                const filterSelect = document.getElementById('filterKategori');
+                const formSelect = document.getElementById('mKategori');
+
+                if (Array.isArray(categoryList)) {
+                    const optionsHtml = categoryList.map(c => `<option value="${c.id}">${c.nama}</option>`).join('');
+                    
+                    if (filterSelect) {
+                        filterSelect.innerHTML = '<option value="">Semua Kategori</option>' + optionsHtml;
+                    }
+                    if (formSelect) {
+                        formSelect.innerHTML = optionsHtml;
+                    }
+                }
+
+                const urlParams = new URLSearchParams(window.location.search);
+                const urlKat = urlParams.get('kategori');
+                if (urlKat && filterSelect) {
+                    filterSelect.value = urlKat;
+                }
+            } catch (e) {
+                console.error('Gagal memuat kategori:', e);
+            }
+        }
 
         async function loadMenuAdmin() {
             try {
                 const response = await fetch(`${API_BASE}/menu.php?all=1`, { credentials: 'same-origin' });
                 if (!response.ok) throw new Error('Gagal memuat data menu');
                 menuList = await response.json();
-                renderMenuTable();
+                filterAndRenderMenu();
             } catch (err) {
                 console.error(err);
                 document.querySelector('.admin-table tbody').innerHTML = `<tr><td colspan="7" style="text-align:center; padding:30px; color:#c0392b;">Gagal memuat data: ${err.message}</td></tr>`;
             }
         }
 
-        function renderMenuTable() {
+        function filterAndRenderMenu() {
+            const catVal = document.getElementById('filterKategori').value;
+            const statusVal = document.getElementById('filterTersedia').value;
+            const searchVal = document.getElementById('searchMenu').value.trim().toLowerCase();
+
+            const filtered = menuList.filter(menu => {
+                if (catVal && String(menu.kategori_id) !== String(catVal) && menu.kategori_nama !== catVal) {
+                    return false;
+                }
+                if (statusVal && menu.status !== statusVal) {
+                    return false;
+                }
+                if (searchVal) {
+                    const nameMatch = (menu.nama || '').toLowerCase().includes(searchVal);
+                    const slugMatch = (menu.slug || '').toLowerCase().includes(searchVal);
+                    const catMatch = (menu.kategori_nama || '').toLowerCase().includes(searchVal);
+                    if (!nameMatch && !slugMatch && !catMatch) return false;
+                }
+                return true;
+            });
+
+            renderMenuTable(filtered);
+        }
+
+        function renderMenuTable(list = null) {
+            const targetList = list !== null ? list : menuList;
             const tbody = document.querySelector('.admin-table tbody');
-            if (!menuList || menuList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:30px; color:var(--text-gray);">Belum ada data menu.</td></tr>`;
+            if (!targetList || targetList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:30px; color:var(--text-gray);">Tidak ada data menu yang sesuai filter.</td></tr>`;
                 return;
             }
 
-            tbody.innerHTML = menuList.map((menu) => {
+            tbody.innerHTML = targetList.map((menu) => {
                 let badgeClass = menu.status === 'aktif' ? 'confirmed' : 'cancel';
                 let statusLabel = menu.status === 'aktif' ? 'Tersedia' : 'Tidak Tersedia';
 
                 let imgSrc = menu.gambar_utama || 'img/logo.png';
-                if (!imgSrc.startsWith('img/') && !imgSrc.startsWith('../') && !imgSrc.startsWith('/')) {
+                if (!imgSrc.startsWith('http') && !imgSrc.startsWith('img/') && !imgSrc.startsWith('../') && !imgSrc.startsWith('/')) {
                     imgSrc = 'img/' + imgSrc;
                 }
 
                 return `
                     <tr>
                         <td><img src="../${imgSrc}" onerror="this.onerror=null; this.src='../img/logo.png';" alt="${menu.nama}" class="tbl-img" style="width:45px; height:45px; object-fit:cover; border-radius:6px;" /></td>
-                        <td><strong>${menu.nama}</strong><br /><small>${menu.slug || '-'}</small></td>
-                        <td>${menu.kategori_nama || 'Menu'}</td>
-                        <td>Rp${Number(menu.harga).toLocaleString('id-ID')}</td>
+                        <td><strong>${menu.nama}</strong><br /><small style="color:#888;">/${menu.slug || '-'}</small></td>
+                        <td><span style="background:#f0f4f8; color:#1f618d; padding:4px 10px; border-radius:12px; font-weight:600; font-size:0.8rem;">${menu.kategori_nama || 'Menu'}</span></td>
+                        <td style="font-weight:700; color:var(--primary);">Rp ${Number(menu.harga).toLocaleString('id-ID')}</td>
                         <td><span class="badge ${badgeClass}" id="badge-${menu.id}">${statusLabel}</span></td>
                         <td>${menu.jumlah_terjual ? Number(menu.jumlah_terjual).toLocaleString('id-ID') + ' porsi' : '-'}</td>
                         <td>
-                            <div class="action-btns">
+                            <div class="action-btns" style="display:flex; gap:6px;">
                                 <button class="btn-act" style="background:${menu.status==='aktif'?'#e8f5e9':'#fff3e0'};color:${menu.status==='aktif'?'#2e7d32':'#e65100'};border:1px solid ${menu.status==='aktif'?'#a5d6a7':'#ffcc80'};" onclick="toggleMenuStatus(${menu.id},'${menu.status}')" title="Toggle Status">
                                     <i class="fa fa-${menu.status==='aktif'?'check-circle':'times-circle'}"></i>
                                 </button>
