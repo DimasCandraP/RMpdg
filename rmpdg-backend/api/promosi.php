@@ -20,6 +20,18 @@ switch ($method) {
 
     // -----------------------------------------------------------------
     case 'GET':
+        // Auto-seed promo default (Google Review saja) jika tabel promosi masih kosong
+        try {
+            $pdo->exec("DELETE FROM promosi WHERE judul LIKE '%DISKON%' OR sub_judul LIKE '%SPESIAL ACARA%'");
+
+            $countStmt = $pdo->query('SELECT COUNT(*) FROM promosi');
+            if ($countStmt && (int)$countStmt->fetchColumn() === 0) {
+                $seedSql = "INSERT INTO promosi (judul, sub_judul, deskripsi, diskon_persen, warna_tema, tanggal_mulai, tanggal_akhir, status) VALUES
+                ('GRATIS ES TEH UNTUK KAMU!', '⭐ PROMO GOOGLE REVIEW', 'Beri bintang 5 & tulis ulasan jujur di Google Maps RM Padang Pesona Kapau Muntilan. Tunjukkan buktinya ke kasir dan dapatkan 1 gelas Es Teh gratis saat makan di tempat!', NULL, 'red', '2026-01-01', '2026-12-31', 'aktif')";
+                $pdo->exec($seedSql);
+            }
+        } catch (Exception $e) {}
+
         if (isset($_GET['id'])) {
             $stmt = $pdo->prepare('SELECT * FROM promosi WHERE id = ?');
             $stmt->execute([$_GET['id']]);

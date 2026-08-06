@@ -266,6 +266,9 @@ CREATE TABLE `promosi` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ;
 
+INSERT INTO `promosi` (`id`, `judul`, `sub_judul`, `deskripsi`, `diskon_persen`, `warna_tema`, `tanggal_mulai`, `tanggal_akhir`, `gambar`, `status`) VALUES
+(1, 'GRATIS ES TEH UNTUK KAMU!', '⭐ PROMO GOOGLE REVIEW', 'Beri bintang 5 & tulis ulasan jujur di Google Maps RM Padang Pesona Kapau Muntilan. Tunjukkan buktinya ke kasir dan dapatkan 1 gelas Es Teh gratis saat makan di tempat!', NULL, 'red', '2026-01-01', '2026-12-31', NULL, 'aktif');
+
 -- --------------------------------------------------------
 
 --
