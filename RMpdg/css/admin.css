@@ -615,6 +615,30 @@
     color: var(--primary);
 }
 
+.btn-view-menu {
+    height: 32px;
+    padding: 0 14px;
+    white-space: nowrap;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    background: #EAF4FB;
+    color: #1F618D;
+    border: 1px solid #AED6F1;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+
+.btn-view-menu:hover {
+    background: #2980B9;
+    color: #ffffff;
+    border-color: #2980B9;
+    box-shadow: 0 2px 6px rgba(41, 128, 185, 0.25);
+}
+
 /* ===== MODAL & FORMS ===== */
 .modal-overlay {
     display: none;

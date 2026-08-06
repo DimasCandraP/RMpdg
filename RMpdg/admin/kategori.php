@@ -151,18 +151,18 @@
             tbody.innerHTML = list.map(item => `
                 <tr>
                     <td>#${item.id}</td>
-                    <td><strong>${item.nama}</strong></td>
+                    <td><strong style="color:#2c3e50; font-size:0.95rem;">${item.nama}</strong></td>
                     <td>
-                        <span class="badge confirmed" style="cursor:pointer;" onclick="viewCategoryMenu(${item.id}, '${item.nama.replace(/'/g, "\\'")}')" title="Klik untuk melihat menu">
-                            <i class="fa fa-utensils"></i> ${item.total_menu || 0} Menu
+                        <span class="badge confirmed" style="cursor:pointer; padding:6px 12px; font-size:0.82rem; font-weight:700; border-radius:20px;" onclick="viewCategoryMenu(${item.id}, '${item.nama.replace(/'/g, "\\'")}')" title="Klik untuk melihat menu">
+                            <i class="fa fa-utensils" style="margin-right:4px;"></i> ${item.total_menu || 0} Menu
                         </span>
                     </td>
                     <td>
-                        <div class="action-btns" style="display:flex; gap:6px;">
-                            <button class="btn-act view" onclick="viewCategoryMenu(${item.id}, '${item.nama.replace(/'/g, "\\'")}')" title="Lihat Daftar Menu" style="background:#17a2b8; color:#fff; border:none; padding:6px 12px; border-radius:6px; font-size:0.8rem; cursor:pointer; font-weight:600; display:inline-flex; align-items:center; gap:5px;">
+                        <div class="action-btns" style="display:flex; align-items:center; gap:8px;">
+                            <button class="btn-view-menu" onclick="viewCategoryMenu(${item.id}, '${item.nama.replace(/'/g, "\\'")}')" title="Lihat Daftar Menu">
                                 <i class="fa fa-eye"></i> Lihat Menu
                             </button>
-                            <button class="btn-act delete" onclick="deleteKategori(${item.id})" title="Hapus">
+                            <button class="btn-act delete" onclick="deleteKategori(${item.id})" title="Hapus Kategori">
                                 <i class="fa fa-trash"></i>
                             </button>
                         </div>
