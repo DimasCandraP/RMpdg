@@ -72,8 +72,11 @@ switch ($method) {
         $namaFile     = 'bukti_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
         $tujuanUpload = $UPLOAD_DIR . $namaFile;
 
-        if (!move_uploaded_file($_FILES['fileBukti']['tmp_name'], $tujuanUpload)) {
-            sendResponse(['error' => 'Gagal menyimpan file bukti pembayaran'], 500);
+        if (!@move_uploaded_file($_FILES['fileBukti']['tmp_name'], $tujuanUpload)) {
+            if (!@copy($_FILES['fileBukti']['tmp_name'], $tujuanUpload)) {
+                error_log("Upload Error: Cannot move or copy uploaded file to " . $tujuanUpload);
+                sendResponse(['error' => 'Gagal menyimpan file bukti pembayaran'], 500);
+            }
         }
 
         $subtotal = 0;
@@ -160,8 +163,11 @@ switch ($method) {
             $pdo->commit();
             syncPelanggan($pdo, $nama, $telp);
         } catch (Exception $e) {
-            $pdo->rollBack();
-            sendResponse(['error' => 'Gagal menyimpan pesanan'], 500);
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+            error_log("Pesanan Menu Error: " . $e->getMessage() . "\n" . $e->getTraceAsString());
+            sendResponse(['error' => 'Gagal menyimpan pesanan: ' . $e->getMessage()], 500);
         }
 
         sendResponse([

@@ -1080,59 +1080,7 @@
   <script src="js/menu-filter.js"></script>
   <script src="js/cart.js"></script>
   <script>
-    // ===== INJECT RATING & TERJUAL KE KARTU MENU =====
     document.addEventListener('DOMContentLoaded', () => {
-      // Map nama menu (lowercase) ke data
-      const menuByName = {};
-      Object.values(MENU_DATA).forEach(item => {
-        menuByName[item.nama.toLowerCase()] = item;
-      });
-
-      document.querySelectorAll('.menu-item').forEach(card => {
-        const h3 = card.querySelector('h3');
-        if (!h3) return;
-        const namaKey = h3.textContent.replace(/\s*\(.*?\)\s*/g, '').trim().toLowerCase();
-
-        // Cari data yang cocok (exact atau partial match)
-        let data = menuByName[namaKey];
-        if (!data) {
-          // Coba partial match
-          const keys = Object.keys(menuByName);
-          const matched = keys.find(k => namaKey.includes(k) || k.includes(namaKey.split(/[–-]/)[0].trim()));
-          if (matched) data = menuByName[matched];
-        }
-
-        if (!data) return;
-
-        // Buat bintang rating
-        const fullStars = Math.floor(data.rating);
-        const hasHalf = data.rating % 1 >= 0.5;
-        let starsHtml = '';
-        for (let i = 0; i < 5; i++) {
-          if (i < fullStars) starsHtml += '<i class="fa fa-star" style="color:#F59E0B;font-size:0.7rem;"></i>';
-          else if (i === fullStars && hasHalf) starsHtml += '<i class="fa fa-star-half-alt" style="color:#F59E0B;font-size:0.7rem;"></i>';
-          else starsHtml += '<i class="fa-regular fa-star" style="color:#D1D5DB;font-size:0.7rem;"></i>';
-        }
-
-        const ratingDiv = document.createElement('div');
-        ratingDiv.style.cssText = 'display:flex;align-items:center;gap:5px;margin-top:4px;flex-wrap:wrap;';
-        ratingDiv.innerHTML = `
-          <span style="display:flex;gap:1px;">${starsHtml}</span>
-          <span style="font-size:0.72rem;color:#6B7280;font-weight:600;">${data.rating.toFixed(1)}</span>
-          <span style="font-size:0.72rem;color:#9CA3AF;">(${data.ulasan} ulasan)</span>
-          <span style="font-size:0.72rem;color:#10B981;font-weight:700;background:#ECFDF5;padding:1px 6px;border-radius:10px;">
-            <i class="fa fa-fire" style="font-size:0.65rem;"></i> ${data.ulasan * 3}+ terjual
-          </span>
-        `;
-
-        const infoDiv = card.querySelector('.menu-item-info');
-        if (infoDiv) {
-          const catTag = infoDiv.querySelector('.menu-cat-tag');
-          if (catTag) infoDiv.insertBefore(ratingDiv, catTag);
-          else infoDiv.appendChild(ratingDiv);
-        }
-      });
-
       // ===== FETCH STATUS MENU DARI API (habis/tersedia) =====
       const apiBase = window.API_BASE || (window.location.pathname.includes('/MPTI/') ? '/MPTI/rmpdg-backend/api' : '/rmpdg-backend/api');
       fetch(`${apiBase}/menu.php`)
