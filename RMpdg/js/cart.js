@@ -29,7 +29,7 @@ const CartSystem = {
     this.updateUI();
 
     // Show toast
-    this.showToast(`${item.qty} porsi ${item.nama} ditambahkan ke keranjang!`);
+    this.showToast(`${item.nama} ditambahkan ke keranjang.`);
 
     // Add scale bounce animation to FAB
     const fab = document.getElementById('cartFab');

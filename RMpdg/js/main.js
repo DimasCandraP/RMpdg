@@ -112,7 +112,7 @@ async function performLogout() {
   } catch (e) {}
   localStorage.clear();
   sessionStorage.clear();
-  alert('Anda telah berhasil keluar dari akun (Sign Out).');
+  alert('Berhasil keluar.');
   const isInAdmin = window.location.pathname.includes('/admin/');
   window.location.href = isInAdmin ? '../index.html' : 'index.html';
 }

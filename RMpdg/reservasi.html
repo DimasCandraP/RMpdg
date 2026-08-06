@@ -157,7 +157,7 @@
         <div id="resSuccess" style="display:none;margin-top:16px;background:#E8F8F0;border:1px solid #27AE60;
             border-radius:8px;padding:14px 18px;color:#1a5c38;font-size:0.88rem;">
           <i class="fa fa-check-circle" style="color:#27AE60;margin-right:8px;"></i>
-          <strong>Reservasi berhasil dikirim!</strong> Kami akan menghubungi Anda segera.
+          <strong>Reservasi Berhasil!</strong> Tim kami akan menghubungi Anda.
         </div>
       </div>
     </div>
@@ -232,7 +232,7 @@
 
       const isLoggedIn = (localStorage.getItem('is_logged_in') === 'true' || sessionStorage.getItem('is_logged_in') === 'true') || (localStorage.getItem('admin_logged_in') === 'true' || sessionStorage.getItem('admin_logged_in') === 'true');
       if (!isLoggedIn) {
-        alert('⚠️ Anda harus login terlebih dahulu!');
+        alert('Silakan login terlebih dahulu.');
         localStorage.setItem('redirect_after_login', window.location.href);
         window.location.href = 'login.html';
         return;
@@ -248,7 +248,7 @@
       const catatan = document.getElementById('resCatatan').value.trim();
 
       if (!nama || !telepon || !tanggal || !jam || !jumlah_tamu) {
-        alert('Mohon lengkapi semua field yang wajib diisi (*).');
+        alert('Data reservasi belum lengkap.');
         return;
       }
 
@@ -291,7 +291,7 @@
         }, 4000);
 
       } catch (err) {
-        alert('Terjadi kesalahan: ' + err.message);
+        alert('Gagal membuat reservasi.');
       }
     }
   </script>
