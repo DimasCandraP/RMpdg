@@ -286,7 +286,7 @@
 
       const isLoggedIn = (localStorage.getItem('is_logged_in') === 'true' || sessionStorage.getItem('is_logged_in') === 'true') || (localStorage.getItem('admin_logged_in') === 'true' || sessionStorage.getItem('admin_logged_in') === 'true');
       if (!isLoggedIn) {
-        alert('⚠️ Perhatian!\n\nSilakan Login atau Daftar akun terlebih dahulu untuk menyelesaikan pembuatan reservasi meja Anda.');
+        alert('Silakan login terlebih dahulu untuk membuat reservasi.');
         localStorage.setItem('redirect_after_login', window.location.href);
         window.location.href = 'login.html';
         return;
