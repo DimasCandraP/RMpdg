@@ -144,13 +144,49 @@
             </select>
           </div>
         </div>
+        <!-- Pembayaran Konfirmasi Reservasi -->
+        <div style="font-size:0.9rem; font-weight:700; color:var(--primary); margin:24px 0 10px; padding-bottom:6px; border-bottom:2px solid var(--light);">
+          Konfirmasi &amp; Pembayaran Reservasi
+        </div>
+
         <div class="form-group">
-          <label>Catatan Tambahan</label>
-          <textarea id="resCatatan" placeholder="Tulis permintaan khusus atau catatan lainnya" rows="3"></textarea>
+          <label>Pilih Cara Pembayaran <span class="req">*</span></label>
+          <select id="resMetodeBayar" onchange="toggleResPaymentDetails()">
+            <option value="qris">QRIS (GoPay/OVO/ShopeePay/Dana)</option>
+            <option value="bca">Transfer Bank BCA</option>
+          </select>
+        </div>
+
+        <div style="background:#fafafa; border:1px dashed #ccc; border-radius:8px; padding:16px; margin-bottom:16px;">
+          <!-- QRIS Box -->
+          <div id="resQrisDetail" style="text-align:center;">
+            <p style="font-size:0.85rem; color:#555; margin-bottom:8px;">Scan kode QRIS berikut untuk konfirmasi reservasi:</p>
+            <img src="img/qris.jpeg" alt="QRIS RM Padang" style="width:150px; height:150px; display:block; margin:0 auto 8px; border:1px solid #eee;" />
+            <strong style="font-size:0.88rem; color:#333;">A/N Rumah Makan Padang Uni Yani</strong>
+          </div>
+
+          <!-- BCA Box -->
+          <div id="resBcaDetail" style="display:none; flex-direction:column; gap:6px;">
+            <div style="font-weight:700; color:#0056b3; font-size:1.1rem; margin-bottom:4px;">BCA</div>
+            <div style="font-size:0.85rem; color:#444;">No. Rekening: <strong>7890 1234 56</strong></div>
+            <div style="font-size:0.85rem; color:#444;">Atas Nama: <strong>Rumah Makan Padang Uni Yani</strong></div>
+          </div>
+        </div>
+
+        <!-- Upload Bukti -->
+        <div class="form-group" style="margin-bottom:20px;">
+          <label>Upload Bukti Pembayaran <span class="req">*</span></label>
+          <div style="border:2px dashed #ccc; border-radius:8px; padding:16px; text-align:center; cursor:pointer; background:#fff;" onclick="document.getElementById('resFileBukti').click()">
+            <i class="fa fa-cloud-arrow-up" style="font-size:1.8rem; color:var(--primary); margin-bottom:6px;"></i>
+            <p style="font-size:0.85rem; margin:0; color:#555;">Klik untuk upload foto bukti transfer</p>
+            <span style="font-size:0.75rem; color:#888;">Format: JPG, JPEG, PNG, WEBP (Maks. 5MB)</span>
+            <input type="file" id="resFileBukti" accept="image/*" style="display:none;" onchange="previewResFile(this)" />
+          </div>
+          <p id="resFileName" style="margin-top:6px; font-weight:700; color:#2e7d32; font-size:0.85rem;"></p>
         </div>
 
         <button class="btn-submit" id="btnReservasi" onclick="submitReservasi()">
-          <i class="fa fa-calendar-check"></i> Buat Reservasi
+          <i class="fa fa-calendar-check"></i> Buat Reservasi &amp; Bayar
         </button>
 
         <!-- Notifikasi sukses -->
@@ -227,6 +263,28 @@
       }
     });
 
+    function toggleResPaymentDetails() {
+      const method = document.getElementById('resMetodeBayar').value;
+      const qrisBox = document.getElementById('resQrisDetail');
+      const bcaBox = document.getElementById('resBcaDetail');
+      
+      qrisBox.style.display = 'none';
+      bcaBox.style.display = 'none';
+
+      if (method === 'qris') {
+        qrisBox.style.display = 'block';
+      } else if (method === 'bca') {
+        bcaBox.style.display = 'flex';
+      }
+    }
+
+    function previewResFile(input) {
+      const file = input.files[0];
+      if (file) {
+        document.getElementById('resFileName').innerHTML = '<i class="fa fa-circle-check"></i> ' + file.name;
+      }
+    }
+
     async function submitReservasi(event) {
       if (event) event.preventDefault();
 
@@ -246,26 +304,35 @@
       const jumlah_tamu = document.getElementById('resTamu').value;
       const jenis_acara = document.getElementById('resAcara').value;
       const catatan = document.getElementById('resCatatan').value.trim();
+      const metodeBayar = document.getElementById('resMetodeBayar').value;
+      const fileBukti = document.getElementById('resFileBukti');
 
       if (!nama || !telepon || !tanggal || !jam || !jumlah_tamu) {
         alert('Data reservasi belum lengkap.');
         return;
       }
 
+      if (!fileBukti.files || fileBukti.files.length === 0) {
+        alert('Bukti pembayaran belum diunggah.');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('nama', nama);
+      formData.append('telepon', telepon);
+      formData.append('email', email);
+      formData.append('tanggal', tanggal);
+      formData.append('jam', jam);
+      formData.append('jumlah_tamu', jumlah_tamu);
+      formData.append('jenis_acara', jenis_acara || 'Makan Biasa');
+      formData.append('catatan', catatan);
+      formData.append('metode_bayar', metodeBayar === 'qris' ? 'QRIS' : 'Transfer BCA');
+      formData.append('fileBukti', fileBukti.files[0]);
+
       try {
         const response = await fetch(`${API_BASE}/reservasi.php`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            nama: nama,
-            telepon: telepon,
-            email: email,
-            tanggal: tanggal,
-            jam: jam,
-            jumlah_tamu: jumlah_tamu,
-            jenis_acara: jenis_acara || 'Makan Biasa',
-            catatan: catatan
-          })
+          body: formData
         });
 
         const result = await response.json().catch(() => ({ error: 'Terjadi kesalahan pada server backend.' }));
@@ -283,6 +350,8 @@
             const el = document.getElementById(id);
             if (el) el.value = '';
           });
+          document.getElementById('resFileName').innerHTML = '';
+          document.getElementById('resFileBukti').value = '';
           document.getElementById('resJam').selectedIndex = 0;
           document.getElementById('resAcara').selectedIndex = 0;
           document.getElementById('resSuccess').style.display = 'none';

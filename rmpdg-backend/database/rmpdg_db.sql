@@ -283,6 +283,8 @@ CREATE TABLE `reservasi` (
   `jumlah_tamu` smallint(5) UNSIGNED NOT NULL,
   `jenis_acara` varchar(50) DEFAULT NULL,
   `catatan` text DEFAULT NULL,
+  `metode_bayar` varchar(50) DEFAULT NULL,
+  `bukti_bayar` varchar(255) DEFAULT NULL,
   `status` enum('pending','dikonfirmasi','selesai','dibatalkan') NOT NULL DEFAULT 'pending',
   `waktu_daftar` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
