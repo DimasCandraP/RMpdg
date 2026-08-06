@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="id">
 
 <head>
@@ -18,10 +18,14 @@
   <!-- ===== HEADER ===== -->
   <header class="login-header">
     <div class="login-header-container">
-      <div class="login-logo-brand">RM Padang</div>
-      <a href="index.html" class="back-to-home">
-        <i class="fa-solid fa-arrow-left"></i> Kembali ke Beranda
-      </a>
+      <div class="login-logo-brand">
+        <img src="img/logo.png" alt="Logo RM Padang" class="logo" />
+        <div>
+          <span class="brand-name">Rumah Makan Padang</span>
+          <span class="brand-sub">Resto Pesona Kapau</span>
+        </div>
+      </div>
+      <a href="index.html" class="back-to-home">Beranda</a>
     </div>
   </header>
 
@@ -35,8 +39,8 @@
           Cita Rasa <span class="highlight">Minang</span> di Genggaman Anda.
         </h1>
         <p class="tagline-desc">
-          Masuk atau daftar untuk menikmati kemudahan pemesanan catering, reservasi meja, dan promo eksklusif setiap
-          harinya.
+          Masuk atau daftar untuk menikmati kemudahan pemesanan online, reservasi meja, dan berbagai promo eksklusif
+          dari Rumah Makan Padang Pesona Kapau.
         </p>
         <div class="tagline-img-wrapper">
           <img src="img/071114000_1522751934-Resep-Rendang-Ayam-Kering.jpg" alt="Rendang Daging Sapi" />
@@ -165,9 +169,10 @@
     <div class="login-footer-container">
 
       <div class="lfooter-col-brand">
-        <h4 class="lfooter-brand-title">RM Padang</h4>
+        <h4 class="lfooter-brand-title">Rumah Makan Padang</h4>
         <p class="lfooter-brand-desc">
-          Cita Rasa Asli & Bahan Berkualitas. Menyajikan kehangatan masakan Minang untuk keluarga Anda sejak 1985.
+          Resto Pesona Kapau — menyajikan hidangan khas Minangkabau autentik dengan cita rasa bumbu rempah pilihan untuk
+          keluarga Anda.
         </p>
       </div>
 
@@ -176,8 +181,8 @@
         <ul class="lfooter-links-list">
           <li><a href="index.html">Beranda</a></li>
           <li><a href="menu.html">Menu Favorit</a></li>
-          <li><a href="catering.html">Layanan Catering</a></li>
           <li><a href="tentang-kami.html">Tentang Kami</a></li>
+          <li><a href="kontak.html">Kontak</a></li>
         </ul>
       </div>
 
@@ -185,11 +190,12 @@
         <h5 class="lfooter-section-title">IKUTI KAMI</h5>
         <div class="lfooter-social-icons">
           <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-          <a href="#" aria-label="WhatsApp"><i class="fa-regular fa-comment-dots"></i></a>
-          <a href="tel:+6281234567890" aria-label="Phone"><i class="fa-solid fa-phone"></i></a>
+          <a href="https://wa.me/6281217476223" target="_blank" aria-label="WhatsApp"><i
+              class="fa-brands fa-whatsapp"></i></a>
+          <a href="tel:+6281217476223" aria-label="Phone"><i class="fa-solid fa-phone"></i></a>
         </div>
         <p class="lfooter-copyright">
-          &copy; 2024 Rumah Makan Padang. Hak Cipta Dilindungi.
+          &copy; 2026 Rumah Makan Padang Pesona Kapau. Hak Cipta Dilindungi.
         </p>
       </div>
 
@@ -434,7 +440,7 @@
       if (google.accounts.oauth2 && typeof google.accounts.oauth2.initTokenClient === 'function') {
         const client = google.accounts.oauth2.initTokenClient({
           client_id: GOOGLE_CLIENT_ID,
-          scope: 'email profile',
+          scope: 'email profile openid',
           callback: async (tokenResponse) => {
             if (tokenResponse.error) {
               console.error('Google OAuth Error:', tokenResponse);

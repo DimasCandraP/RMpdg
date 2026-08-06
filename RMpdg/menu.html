@@ -10,6 +10,28 @@
   <link rel="stylesheet" href="css/cart.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <!-- Anti-FOUC: sembunyikan semua menu-item sebelum JS filter berjalan -->
+  <style id="menu-fouc-shield">#menuList .menu-item { visibility: hidden; }</style>
+  <script>
+    // Baca kategori dari URL atau localStorage SEBELUM halaman dirender
+    (function () {
+      var VALID = ['semua','paket-nasi','lauk','sayur','minuman'];
+      try {
+        var urlParams = new URLSearchParams(window.location.search);
+        var paramCat  = urlParams.get('cat') || urlParams.get('kategori') || urlParams.get('category');
+        var storedCat = localStorage.getItem('menu_active_category');
+        var hashCat   = window.location.hash.replace('#', '');
+        var cat = 'semua';
+        if (paramCat && VALID.indexOf(paramCat) !== -1)  cat = paramCat;
+        else if (hashCat && VALID.indexOf(hashCat) !== -1) cat = hashCat;
+        else if (storedCat && VALID.indexOf(storedCat) !== -1) cat = storedCat;
+        // Simpan ke window agar menu-filter.js bisa membacanya langsung
+        window.__MENU_INIT_CATEGORY__ = cat;
+      } catch(e) {
+        window.__MENU_INIT_CATEGORY__ = 'semua';
+      }
+    })();
+  </script>
 </head>
 
 <body>
@@ -54,13 +76,8 @@
       </div>
       <ul class="sidebar-list">
         <li>
-          <a href="#" class="sidebar-link" data-cat="paket-nasi-box">
-            <i class="fa fa-box-open"></i> Paket Nasi Box
-          </a>
-        </li>
-        <li>
-          <a href="#" class="sidebar-link" data-cat="paket-nasi-bungkus">
-            <i class="fa fa-shopping-bag"></i> Paket Nasi Bungkus
+          <a href="#" class="sidebar-link" data-cat="paket-nasi">
+            <i class="fa fa-box-open"></i> Paket Nasi
           </a>
         </li>
         <li>
@@ -109,8 +126,7 @@
       <!-- Filter Tab -->
       <div class="filter-tabs">
         <button class="tab-btn active" data-filter="semua">Semua</button>
-        <button class="tab-btn" data-filter="paket-nasi-box">Paket Nasi Box</button>
-        <button class="tab-btn" data-filter="paket-nasi-bungkus">Paket Nasi Bungkus</button>
+        <button class="tab-btn" data-filter="paket-nasi">Paket Nasi</button>
         <button class="tab-btn" data-filter="lauk">Lauk Satuan</button>
         <button class="tab-btn" data-filter="sayur">Sayur</button>
         <button class="tab-btn" data-filter="minuman">Minuman</button>
@@ -119,243 +135,395 @@
       <!-- Daftar Menu -->
       <div class="menu-list" id="menuList">
 
-        <!-- ===== PAKET NASI BOX ===== -->
-        <div class="menu-item" data-category="paket-nasi-box">
-          <img src="img/071114000_1522751934-Resep-Rendang-Ayam-Kering.jpg" alt="Paket 1" />
+        <!-- ===== PAKET NASI ===== -->
+        <div class="menu-item" data-category="paket-nasi">
+          <img src="img/Screenshot 2026-08-06 085011.png" alt="Nasi Ayam Goreng" />
           <div class="menu-item-info">
-            <h3>Paket 1 – Nasi Box</h3>
-            <p>Nasi, Sayur Kapau, Daun Singkong &amp; Sambal + Buah. Lauk: Rendang Daging Sapi, Pergedel/Telur &amp;
-              Kerupuk.</p>
-            <a href="#" class="menu-cat-tag">Paket Nasi Box</a>
+            <h3>Nasi Ayam Goreng</h3>
+            <p>Nasi Putih, Ayam Goreng, Sayur Kapau, Sambal, Lalapan</p>
+            <a href="#" class="menu-cat-tag">Paket Nasi</a>
           </div>
           <div class="menu-item-action">
-            <span class="menu-price">Rp30.000</span>
-            <a href="menu_detail.html?id=paket-1" class="btn-detail">Lihat Detail</a>
+            <span class="menu-price">Rp24.000</span>
+            <a href="menu_detail.html?id=nasi-ayam-goreng" class="btn-detail">Lihat Detail</a>
           </div>
         </div>
 
-        <div class="menu-item" data-category="paket-nasi-box">
-          <img src="img/071114000_1522751934-Resep-Rendang-Ayam-Kering.jpg" alt="Paket 2" />
+        <div class="menu-item" data-category="paket-nasi">
+          <img src="img/Screenshot 2026-08-06 084809.png" alt="Nasi Ayam Rendang" />
           <div class="menu-item-info">
-            <h3>Paket 2 – Nasi Box</h3>
-            <p>Nasi, Sayur Kapau, Daun Singkong &amp; Sambal. Lauk: Rendang Daging Sapi, Pergedel/Telur &amp; Kerupuk.
-            </p>
-            <a href="#" class="menu-cat-tag">Paket Nasi Box</a>
+            <h3>Nasi Ayam Rendang</h3>
+            <p>Nasi Putih, Ayam Rendang, Sayur Kapau, Sambal, Lalapan</p>
+            <a href="#" class="menu-cat-tag">Paket Nasi</a>
           </div>
           <div class="menu-item-action">
-            <span class="menu-price">Rp28.000</span>
-            <a href="menu_detail.html?id=paket-2" class="btn-detail">Lihat Detail</a>
+            <span class="menu-price">Rp24.000</span>
+            <a href="menu_detail.html?id=nasi-ayam-rendang" class="btn-detail">Lihat Detail</a>
           </div>
         </div>
 
-        <div class="menu-item" data-category="paket-nasi-box">
-          <img src="img/071114000_1522751934-Resep-Rendang-Ayam-Kering.jpg" alt="Paket 3" />
+        <div class="menu-item" data-category="paket-nasi">
+          <img src="img/Screenshot 2026-08-06 084832.png" alt="Nasi Ayam Gulai" />
           <div class="menu-item-info">
-            <h3>Paket 3 – Nasi Box</h3>
-            <p>Nasi, Sayur Kapau, Daun Singkong &amp; Sambal. Lauk: Rendang Daging Sapi &amp; Kerupuk.</p>
-            <a href="#" class="menu-cat-tag">Paket Nasi Box</a>
+            <h3>Nasi Ayam Gulai</h3>
+            <p>Nasi Putih, Ayam Gulai, Sayur Kapau, Sambal, Lalapan</p>
+            <a href="#" class="menu-cat-tag">Paket Nasi</a>
           </div>
           <div class="menu-item-action">
-            <span class="menu-price">Rp25.000</span>
-            <a href="menu_detail.html?id=paket-3" class="btn-detail">Lihat Detail</a>
+            <span class="menu-price">Rp24.000</span>
+            <a href="menu_detail.html?id=nasi-ayam-gulai" class="btn-detail">Lihat Detail</a>
           </div>
         </div>
 
-        <div class="menu-item" data-category="paket-nasi-box">
-          <img src="img/ef425d5c417882455b49f2948c032384.jpg" alt="Paket 4" />
+        <div class="menu-item" data-category="paket-nasi">
+          <img src="img/Screenshot 2026-08-06 085018.png" alt="Nasi Ayam Bakar" />
           <div class="menu-item-info">
-            <h3>Paket 4 – Nasi Box</h3>
-            <p>Nasi, Sayur Kapau, Daun Singkong &amp; Sambal + Buah. Lauk: Ayam ¼ Rendang, Pergedel/Telur + Kerupuk.</p>
-            <a href="#" class="menu-cat-tag">Paket Nasi Box</a>
+            <h3>Nasi Ayam Bakar</h3>
+            <p>Nasi Putih, Ayam Bakar, Sayur Kapau, Sambal, Lalapan</p>
+            <a href="#" class="menu-cat-tag">Paket Nasi</a>
           </div>
           <div class="menu-item-action">
-            <span class="menu-price">Rp27.000</span>
-            <a href="menu_detail.html?id=paket-4" class="btn-detail">Lihat Detail</a>
+            <span class="menu-price">Rp24.000</span>
+            <a href="menu_detail.html?id=nasi-ayam-bakar" class="btn-detail">Lihat Detail</a>
           </div>
         </div>
 
-        <div class="menu-item" data-category="paket-nasi-box">
-          <img src="img/ef425d5c417882455b49f2948c032384.jpg" alt="Paket 5" />
+        <div class="menu-item" data-category="paket-nasi">
+          <img src="img/Screenshot 2026-08-06 084738.png" alt="Nasi Rendang" />
           <div class="menu-item-info">
-            <h3>Paket 5 – Nasi Box</h3>
-            <p>Nasi, Sayur Kapau, Daun Singkong &amp; Sambal. Lauk: Ayam ¼ Masak Rendang, Pergedel/Telur + Kerupuk.</p>
-            <a href="#" class="menu-cat-tag">Paket Nasi Box</a>
+            <h3>Nasi Rendang</h3>
+            <p>Nasi Putih, Rendang Daging, Sayur Kapau, Sambal, Lalapan</p>
+            <a href="#" class="menu-cat-tag">Paket Nasi</a>
           </div>
           <div class="menu-item-action">
-            <span class="menu-price">Rp25.000</span>
-            <a href="menu_detail.html?id=paket-5" class="btn-detail">Lihat Detail</a>
+            <span class="menu-price">Rp27.600</span>
+            <a href="menu_detail.html?id=nasi-rendang" class="btn-detail">Lihat Detail</a>
           </div>
         </div>
 
-        <div class="menu-item" data-category="paket-nasi-box">
-          <img src="img/ef425d5c417882455b49f2948c032384.jpg" alt="Paket 6" />
+        <div class="menu-item" data-category="paket-nasi">
+          <img src="img/Screenshot 2026-08-06 084824.png" alt="Nasi Kalio Hati" />
           <div class="menu-item-info">
-            <h3>Paket 6 – Nasi Box</h3>
-            <p>Nasi, Sayur Kapau, Daun Singkong &amp; Sambal. Lauk: Ayam ¼ Masak Rendang &amp; Kerupuk.</p>
-            <a href="#" class="menu-cat-tag">Paket Nasi Box</a>
+            <h3>Nasi Kalio Hati</h3>
+            <p>Nasi Putih, Kalio Hati, Sayur Kapau, Sambal, Lalapan</p>
+            <a href="#" class="menu-cat-tag">Paket Nasi</a>
           </div>
           <div class="menu-item-action">
-            <span class="menu-price">Rp20.000</span>
-            <a href="menu_detail.html?id=paket-6" class="btn-detail">Lihat Detail</a>
+            <span class="menu-price">Rp24.000</span>
+            <a href="menu_detail.html?id=nasi-kalio-hati" class="btn-detail">Lihat Detail</a>
           </div>
         </div>
 
-        <div class="menu-item" data-category="paket-nasi-box">
-          <img src="img/451c3a2537616f5d5d06750972b5458e.jpg" alt="Paket 7" />
+        <div class="menu-item" data-category="paket-nasi">
+          <img src="img/Screenshot 2026-08-06 084756.png" alt="Nasi Kalio Limpa" />
           <div class="menu-item-info">
-            <h3>Paket 7 – Nasi Box</h3>
-            <p>Nasi, Sayur Kapau, Daun Singkong &amp; Sambal. Lauk: Ayam Paha Masak Rendang &amp; Kerupuk.</p>
-            <a href="#" class="menu-cat-tag">Paket Nasi Box</a>
+            <h3>Nasi Kalio Limpa</h3>
+            <p>Nasi Putih, Kalio Limpa, Sayur Kapau, Sambal, Lalapan</p>
+            <a href="#" class="menu-cat-tag">Paket Nasi</a>
           </div>
           <div class="menu-item-action">
-            <span class="menu-price">Rp19.000</span>
-            <a href="menu_detail.html?id=paket-7" class="btn-detail">Lihat Detail</a>
+            <span class="menu-price">Rp24.000</span>
+            <a href="menu_detail.html?id=nasi-kalio-limpa" class="btn-detail">Lihat Detail</a>
           </div>
         </div>
 
-        <div class="menu-item" data-category="paket-nasi-box">
-          <img src="img/451c3a2537616f5d5d06750972b5458e.jpg" alt="Paket 8" />
+        <div class="menu-item" data-category="paket-nasi">
+          <img src="img/Screenshot 2026-08-06 085715.png" alt="Nasi Telur Dadar" />
           <div class="menu-item-info">
-            <h3>Paket 8 – Nasi Box</h3>
-            <p>Nasi, Sayur Kapau, Daun Singkong &amp; Sambal. Lauk: Ayam Paha Goreng + Kerupuk.</p>
+            <h3>Nasi Telur Dadar</h3>
+            <p>Nasi Putih, Telur Dadar, Sayur Kapau, Sambal, Lalapan</p>
+            <a href="#" class="menu-cat-tag">Paket Nasi</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp18.000</span>
+            <a href="menu_detail.html?id=nasi-telur-dadar" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="paket-nasi">
+          <img src="img/Screenshot 2026-08-06 085710.png" alt="Nasi Perkedel Kentang" />
+          <div class="menu-item-info">
+            <h3>Nasi Perkedel Kentang</h3>
+            <p>Nasi Putih, Perkedel Kentang, Sayur Kapau, Sambal, Lalapan</p>
+            <a href="#" class="menu-cat-tag">Paket Nasi</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp15.000</span>
+            <a href="menu_detail.html?id=nasi-perkedel-kentang" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="paket-nasi">
+          <img src="img/Screenshot 2026-08-06 085602.png" alt="Nasi Sayur Komplit" />
+          <div class="menu-item-info">
+            <h3>Nasi Sayur Komplit</h3>
+            <p>Nasi Putih, Sayur Kapau, Sambal, Lalapan</p>
+            <a href="#" class="menu-cat-tag">Paket Nasi</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp10.000</span>
+            <a href="menu_detail.html?id=nasi-sayur-komplit" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="paket-nasi">
+          <img src="img/Screenshot 2026-08-06 085704.png" alt="Nasi Telur Bulat" />
+          <div class="menu-item-info">
+            <h3>Nasi Telur Bulat</h3>
+            <p>Nasi Putih, Telur Bulat, Sayur Kapau, Sambal, Lalapan</p>
+            <a href="#" class="menu-cat-tag">Paket Nasi</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp16.000</span>
+            <a href="menu_detail.html?id=nasi-telur-bulat" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+
+
+        <!-- ===== LAUK SATUAN ===== -->
+
+
+        <div class="menu-item" data-category="paket-nasi-box">
+          <img src="img/Screenshot 2026-08-06 085735.png" alt="Ketupat Sayur Kapau" />
+          <div class="menu-item-info">
+            <h3>Ketupat Sayur Kapau <span style="font-size:0.75em;color:#e65c00;">(KHAS MINANG)</span></h3>
+            <p>Ketupat dipadukan dengan sayur kapau dan kuah santan yang gurih nikmat memanjakan lidah dipagi hari kombinasi rendang / telur / kikil.</p>
             <a href="#" class="menu-cat-tag">Paket Nasi Box</a>
           </div>
           <div class="menu-item-action">
             <span class="menu-price">Rp18.000</span>
-            <a href="menu_detail.html?id=paket-8" class="btn-detail">Lihat Detail</a>
+            <a href="menu_detail.html?id=ketupat-sayur-kapau" class="btn-detail">Lihat Detail</a>
           </div>
         </div>
 
-        <div class="menu-item" data-category="paket-nasi-box">
-          <img src="img/451c3a2537616f5d5d06750972b5458e.jpg" alt="Paket 9" />
-          <div class="menu-item-info">
-            <h3>Paket 9 – Nasi Box</h3>
-            <p>Nasi, Sayur Kapau, Daun Singkong &amp; Sambal. Lauk: Ayam Paha Goreng.</p>
-            <a href="#" class="menu-cat-tag">Paket Nasi Box</a>
-          </div>
-          <div class="menu-item-action">
-            <span class="menu-price">Rp16.000</span>
-            <a href="menu_detail.html?id=paket-9" class="btn-detail">Lihat Detail</a>
-          </div>
-        </div>
-
-        <div class="menu-item" data-category="paket-nasi-box">
-          <img src="img/451c3a2537616f5d5d06750972b5458e.jpg" alt="Paket 10" />
-          <div class="menu-item-info">
-            <h3>Paket 10 – Nasi Box <span style="font-size:0.75em;color:#c00;">(Pelajar/Santri)</span></h3>
-            <p>Nasi, Sayur Kapau, Daun Singkong &amp; Sambal. Lauk: Ayam Paha Goreng. Khusus Santri/Pelajar/Mahasiswa.
-            </p>
-            <a href="#" class="menu-cat-tag">Paket Nasi Box</a>
-          </div>
-          <div class="menu-item-action">
-            <span class="menu-price">Rp15.000</span>
-            <a href="menu_detail.html?id=paket-10" class="btn-detail">Lihat Detail</a>
-          </div>
-        </div>
-
-        <!-- ===== PAKET NASI BUNGKUS ===== -->
-        <div class="menu-item" data-category="paket-nasi-bungkus">
-          <img src="img/071114000_1522751934-Resep-Rendang-Ayam-Kering.jpg" alt="Paket A" />
-          <div class="menu-item-info">
-            <h3>Paket A – Nasi Bungkus</h3>
-            <p>Nasi, Sayur &amp; Sambal + Rendang Ayam Paha.</p>
-            <a href="#" class="menu-cat-tag">Paket Nasi Bungkus</a>
-          </div>
-          <div class="menu-item-action">
-            <span class="menu-price">Rp15.000 <small style="font-size:0.75em;color:#888;">/ Rp12.000 (tanpa
-                nasi)</small></span>
-            <a href="menu_detail.html?id=paket-a" class="btn-detail">Lihat Detail</a>
-          </div>
-        </div>
-
-        <div class="menu-item" data-category="paket-nasi-bungkus">
-          <img src="img/451c3a2537616f5d5d06750972b5458e.jpg" alt="Paket B" />
-          <div class="menu-item-info">
-            <h3>Paket B – Nasi Bungkus</h3>
-            <p>Nasi, Sayur &amp; Sambal + Ayam Paha Goreng.</p>
-            <a href="#" class="menu-cat-tag">Paket Nasi Bungkus</a>
-          </div>
-          <div class="menu-item-action">
-            <span class="menu-price">Rp13.000 <small style="font-size:0.75em;color:#888;">/ Rp11.000 (tanpa
-                nasi)</small></span>
-            <a href="menu_detail.html?id=paket-b" class="btn-detail">Lihat Detail</a>
-          </div>
-        </div>
-
-        <div class="menu-item" data-category="paket-nasi-bungkus">
-          <img src="img/cf3db3f294804090c83eb546c88da565.jpg" alt="Paket C" />
-          <div class="menu-item-info">
-            <h3>Paket C – Nasi Bungkus <span style="font-size:0.75em;color:#e65c00;">(PROMO)</span></h3>
-            <p>Nasi, Sayur &amp; Sambal + Ayam Sepotong Goreng / Telur Ayam Ceplok.</p>
-            <a href="#" class="menu-cat-tag">Paket Nasi Bungkus</a>
-          </div>
-          <div class="menu-item-action">
-            <span class="menu-price">Rp10.000 <small style="font-size:0.75em;color:#888;">/ Rp9.000 (tanpa
-                nasi)</small></span>
-            <a href="menu_detail.html?id=paket-c" class="btn-detail">Lihat Detail</a>
-          </div>
-        </div>
-
-        <div class="menu-item" data-category="paket-nasi-bungkus">
-          <img src="img/cf3db3f294804090c83eb546c88da565.jpg" alt="Paket D" />
-          <div class="menu-item-info">
-            <h3>Paket D – Nasi Bungkus</h3>
-            <p>Nasi, Sayur &amp; Sambal + Telur Ayam Gulai. Tambahan Tempe/Tahu kecil Rp1.000 / besar Rp2.000.</p>
-            <a href="#" class="menu-cat-tag">Paket Nasi Bungkus</a>
-          </div>
-          <div class="menu-item-action">
-            <span class="menu-price">Rp9.000 <small style="font-size:0.75em;color:#888;">/ Rp8.000 (tanpa
-                nasi)</small></span>
-            <a href="menu_detail.html?id=paket-d" class="btn-detail">Lihat Detail</a>
-          </div>
-        </div>
-
-        <!-- ===== LAUK SATUAN ===== -->
+        <!-- ===== LAUK SATUAN (OLAHAN SAPI, KAMBING, BEBEK & AYAM) ===== -->
         <div class="menu-item" data-category="lauk">
-          <img src="img/071114000_1522751934-Resep-Rendang-Ayam-Kering.jpg" alt="Rendang Daging Sapi" />
+          <img src="img/Screenshot 2026-08-06 084738.png" alt="Rendang Sapi Bukit Tinggi" />
           <div class="menu-item-info">
-            <h3>Rendang Daging Sapi</h3>
-            <p>Daging sapi pilihan dimasak perlahan dengan bumbu rempah khas Padang hingga empuk dan meresap sempurna.
-            </p>
+            <h3>Rendang Sapi Bukit Tinggi</h3>
+            <p>Daging sapi olahan khas Bukittinggi dimasak dengan bumbu rempah-rempah otentik hingga meresap sempurna dan berwarna pekat gurih nikmat.</p>
             <a href="#" class="menu-cat-tag">Lauk</a>
           </div>
           <div class="menu-item-action">
-            <span class="menu-price">Rp25.000</span>
-            <a href="menu_detail.html?id=rendang" class="btn-detail">Lihat Detail</a>
+            <span class="menu-price">Rp28.000</span>
+            <a href="menu_detail.html?id=rendang-sapi-bukittinggi" class="btn-detail">Lihat Detail</a>
           </div>
         </div>
 
         <div class="menu-item" data-category="lauk">
-          <img src="img/071114000_1522751934-Resep-Rendang-Ayam-Kering.jpg" alt="Ayam Masak Rendang" />
+          <img src="img/Screenshot 2026-08-06 084756.png" alt="Limpa Sapi Kalio" />
           <div class="menu-item-info">
-            <h3>Ayam Masak Rendang</h3>
-            <p>Ayam paha dimasak dengan bumbu rendang khas Padang yang kaya rempah, pedas dan gurih.</p>
+            <h3>Limpa Sapi Kalio</h3>
+            <p>Limpa sapi empuk yang dimasak kuah kalio gurih berrempah khas Pesona Kapau.</p>
+            <a href="#" class="menu-cat-tag">Lauk</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp22.000</span>
+            <a href="menu_detail.html?id=limpa-sapi-kalio" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="lauk">
+          <img src="img/Screenshot 2026-08-06 084809.png" alt="Tunjang Sapi (Kikil)" />
+          <div class="menu-item-info">
+            <h3>Tunjang Sapi (Kikil) <span style="font-size:0.75em;color:#e65c00;">(BEST SELLER)</span></h3>
+            <p>Kikil / tunjang sapi pilihan yang empuk dan kenyal, disajikan dalam kuah gulai santan kuning khas Padang.</p>
+            <a href="#" class="menu-cat-tag">Lauk</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp26.000</span>
+            <a href="menu_detail.html?id=tunjang-sapi" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="lauk">
+          <img src="img/Screenshot 2026-08-06 084824.png" alt="Asam Padeh Gajebo" />
+          <div class="menu-item-info">
+            <h3>Asam Padeh Gajebo <span style="font-size:0.75em;color:#e65c00;">(BEST SELLER)</span></h3>
+            <p>Daging gajebo gurih dengan kuah asam padeh yang segar dan pedas mantap khas Minang.</p>
+            <a href="#" class="menu-cat-tag">Lauk</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp27.000</span>
+            <a href="menu_detail.html?id=asam-padeh-gajebo" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="lauk">
+          <img src="img/Screenshot 2026-08-06 084832.png" alt="Hati Sapi Kalio" />
+          <div class="menu-item-info">
+            <h3>Hati Sapi Kalio</h3>
+            <p>Hati sapi olahan bertekstur lembut disiram kuah kalio kental nan gurih kaya rempah.</p>
+            <a href="#" class="menu-cat-tag">Lauk</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp22.000</span>
+            <a href="menu_detail.html?id=hati-sapi-kalio" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="lauk">
+          <img src="img/Screenshot 2026-08-06 084929.png" alt="Dendeng Kering" />
+          <div class="menu-item-info">
+            <h3>Dendeng Kering</h3>
+            <p>Irisan daging sapi tipis yang digoreng hingga garing dan renyah beraroma gurih rempah khas Padang.</p>
+            <a href="#" class="menu-cat-tag">Lauk</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp28.000</span>
+            <a href="menu_detail.html?id=dendeng-kering" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="lauk">
+          <img src="img/Screenshot 2026-08-06 084917.png" alt="Paru Kering" />
+          <div class="menu-item-info">
+            <h3>Paru Kering</h3>
+            <p>Paru sapi goreng renyah dan gurih, pas menjadi lauk pendamping santapan nasi Padang.</p>
+            <a href="#" class="menu-cat-tag">Lauk</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp24.000</span>
+            <a href="menu_detail.html?id=paru-kering" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="lauk">
+          <img src="img/Screenshot 2026-08-06 084936.png" alt="Dendeng Cabai Merah" />
+          <div class="menu-item-info">
+            <h3>Dendeng Cabai Merah</h3>
+            <p>Dendeng sapi goreng disajikan dengan baluran sambal cabai merah pecah yang pedas nikmat.</p>
+            <a href="#" class="menu-cat-tag">Lauk</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp28.000</span>
+            <a href="menu_detail.html?id=dendeng-cabai-merah" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="lauk">
+          <img src="img/Screenshot 2026-08-06 085202.png" alt="Tambusu (Usus Sapi Isi Telur)" />
+          <div class="menu-item-info">
+            <h3>Tambusu (Usus Sapi Isi Telur) <span style="font-size:0.75em;color:#e65c00;">(BEST SELLER)</span></h3>
+            <p>Kami menyediakan menu olahan khas dari BUKIT TINGGI. TAMBUSU usus sapi yang di isi dengan telur. Salah satu makanan otentik dari bukit tinggi yang sudah terkenal, dipadukan dengan kuah gulai nikmat.</p>
+            <a href="#" class="menu-cat-tag">Lauk</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp27.000</span>
+            <a href="menu_detail.html?id=tambusu" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="lauk">
+          <img src="img/Screenshot 2026-08-06 085215.png" alt="Gulai Banak (Otak Sapi)" />
+          <div class="menu-item-info">
+            <h3>Gulai Banak (Otak Sapi) <span style="font-size:0.75em;color:#e65c00;">(BEST SELLER)</span></h3>
+            <p>Gulai banak adalah gulai otak sapi yang di masak dengan kuah gulai asam pedas yang segar dan nikmat sebagai lauk pendamping nasi padang.</p>
+            <a href="#" class="menu-cat-tag">Lauk</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp26.000</span>
+            <a href="menu_detail.html?id=gulai-banak" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="lauk">
+          <img src="img/Screenshot 2026-08-06 085227.png" alt="Cincang Kambing" />
+          <div class="menu-item-info">
+            <h3>Cincang Kambing <span style="font-size:0.75em;color:#e65c00;">(BEST SELLER)</span></h3>
+            <p>menu olahan cincang kambing kami adalah menu otentik dari bukit tinggi, daging kambing yang di masak dengan bumbu kaya rempah serta kuah santan yang kental menjadikan rasa daging kambing semakin nikmat.</p>
+            <a href="#" class="menu-cat-tag">Lauk</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp30.000</span>
+            <a href="menu_detail.html?id=cincang-kambing" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="lauk">
+          <img src="img/Screenshot 2026-08-06 085726.png" alt="Sop Buntut dan Iga Sapi" />
+          <div class="menu-item-info">
+            <h3>Sop Buntut dan Iga Sapi <span style="font-size:0.75em;color:#e65c00;">(BEST SELLER)</span></h3>
+            <p>Sop Buntut dan Iga sapi yang masak dengan bumbu kaya rempah dan teksture buntuk dan iga yang lembut disajikan dalam kondisi panas menjadikan menu makan anda semakin nikmat.</p>
+            <a href="#" class="menu-cat-tag">Lauk</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp35.000</span>
+            <a href="menu_detail.html?id=sop-buntut-iga" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="lauk">
+          <img src="img/Screenshot 2026-08-06 084950.png" alt="Ayam Kemangi" />
+          <div class="menu-item-info">
+            <h3>Ayam Kemangi</h3>
+            <p>Olahan ayam bumbu rempah kuning yang dipadukan dengan aroma daun kemangi segar yang harum dan gurih.</p>
             <a href="#" class="menu-cat-tag">Lauk</a>
           </div>
           <div class="menu-item-action">
             <span class="menu-price">Rp20.000</span>
-            <a href="menu_detail.html?id=ayam-rendang" class="btn-detail">Lihat Detail</a>
+            <a href="menu_detail.html?id=ayam-kemangi" class="btn-detail">Lihat Detail</a>
           </div>
         </div>
 
         <div class="menu-item" data-category="lauk">
-          <img src="img/451c3a2537616f5d5d06750972b5458e.jpg" alt="Ayam Paha Goreng" />
+          <img src="img/Screenshot 2026-08-06 085011.png" alt="Ayam Goreng Bumbu" />
           <div class="menu-item-info">
-            <h3>Ayam Paha Goreng</h3>
-            <p>Ayam paha goreng krispi dengan bumbu khas Padang yang gurih dan renyah.</p>
+            <h3>Ayam Goreng Bumbu</h3>
+            <p>Ayam goreng dengan taburan bumbu rempah goreng khas Padang yang gurih dan renyah.</p>
             <a href="#" class="menu-cat-tag">Lauk</a>
           </div>
           <div class="menu-item-action">
-            <span class="menu-price">Rp15.000</span>
-            <a href="menu_detail.html?id=ayam-goreng" class="btn-detail">Lihat Detail</a>
+            <span class="menu-price">Rp18.000</span>
+            <a href="menu_detail.html?id=ayam-goreng-bumbu" class="btn-detail">Lihat Detail</a>
           </div>
         </div>
 
         <div class="menu-item" data-category="lauk">
-          <img src="img/451c3a2537616f5d5d06750972b5458e.jpg" alt="Ayam Pop" />
+          <img src="img/Screenshot 2026-08-06 085018.png" alt="Ayam Bakar Padang" />
           <div class="menu-item-info">
-            <h3>Ayam Pop</h3>
-            <p>Ayam kampung goreng khas Padang yang gurih, empuk, disajikan dengan sambal khas yang manis gurih.</p>
+            <h3>Ayam Bakar Padang</h3>
+            <p>Ayam pilihan yang dibakar dengan bumbu rempah padang hingga harum meresap ke dalam daging.</p>
+            <a href="#" class="menu-cat-tag">Lauk</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp20.000</span>
+            <a href="menu_detail.html?id=ayam-bakar" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="lauk">
+          <img src="img/Screenshot 2026-08-06 085033.png" alt="Ayam Cabai Merah" />
+          <div class="menu-item-info">
+            <h3>Ayam Cabai Merah</h3>
+            <p>Ayam potong goreng disajikan dengan baluran sambal cabai merah khas Minang yang pedas gurih.</p>
+            <a href="#" class="menu-cat-tag">Lauk</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp20.000</span>
+            <a href="menu_detail.html?id=ayam-cabai-merah" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="lauk">
+          <img src="img/Screenshot 2026-08-06 085441.png" alt="Itik Lado Mudo" />
+          <div class="menu-item-info">
+            <h3>Itik Lado Mudo</h3>
+            <p>Kami menyediakan menu olahan bebek khas dari minang kabau. bebek yang di masak dengan cabai hijau. Dengan rasa yang istimewa yang akan memuaskan selera.</p>
+            <a href="#" class="menu-cat-tag">Lauk</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp32.000</span>
+            <a href="menu_detail.html?id=itik-lado-mudo" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="lauk">
+          <img src="img/Screenshot 2026-08-06 085454.png" alt="Ayam Pop" />
+          <div class="menu-item-info">
+            <h3>Ayam Pop <span style="font-size:0.75em;color:#e65c00;">(BEST SELLER)</span></h3>
+            <p>Kami menyediakan menu olahan ayam pop putih yang di masak dengan rempah dan air kelapa yang manis. Menjadikan ayam pop menu yang mempunyai rasa yang menggugah selera, di padukan dengan sambal merah ayam pop.</p>
             <a href="#" class="menu-cat-tag">Lauk</a>
           </div>
           <div class="menu-item-action">
@@ -365,63 +533,207 @@
         </div>
 
         <div class="menu-item" data-category="lauk">
-          <img src="img/ac649842c150745962b88a60234d9091.jpg" alt="Dendeng Balado" />
+          <img src="img/Screenshot 2026-08-06 085710.png" alt="Perkedel" />
           <div class="menu-item-info">
-            <h3>Dendeng Balado</h3>
-            <p>Dendeng sapi dengan sambal balado pedas manis yang menggugah selera, renyah di luar lembut di dalam.</p>
-            <a href="#" class="menu-cat-tag">Lauk</a>
-          </div>
-          <div class="menu-item-action">
-            <span class="menu-price">Rp28.000</span>
-            <a href="menu_detail.html?id=dendeng-balado" class="btn-detail">Lihat Detail</a>
-          </div>
-        </div>
-
-        <div class="menu-item" data-category="lauk">
-          <img src="img/ef425d5c417882455b49f2948c032384.jpg" alt="Gulai Ayam" />
-          <div class="menu-item-info">
-            <h3>Gulai Ayam</h3>
-            <p>Ayam dimasak gulai santan kuning khas Minang, kaya rempah dan sangat gurih.</p>
-            <a href="#" class="menu-cat-tag">Lauk</a>
-          </div>
-          <div class="menu-item-action">
-            <span class="menu-price">Rp22.000</span>
-            <a href="menu_detail.html?id=gulai-ayam" class="btn-detail">Lihat Detail</a>
-          </div>
-        </div>
-
-        <div class="menu-item" data-category="lauk">
-          <img src="img/cf3db3f294804090c83eb546c88da565.jpg" alt="Pergedel/Telur" />
-          <div class="menu-item-info">
-            <h3>Pergedel / Telur</h3>
-            <p>Pergedel kentang atau telur goreng/gulai sebagai lauk tambahan pelengkap nasi.</p>
+            <h3>Perkedel</h3>
+            <p>Perkedel kentang lembut dan gurih renyah khas Minang pelengkap nikmat hidangan Padang.</p>
             <a href="#" class="menu-cat-tag">Lauk</a>
           </div>
           <div class="menu-item-action">
             <span class="menu-price">Rp5.000</span>
-            <a href="menu_detail.html?id=pergedel" class="btn-detail">Lihat Detail</a>
+            <a href="menu_detail.html?id=perkedel" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <!-- ===== LAUK SATUAN (IKAN & SEAFOOD) ===== -->
+        <div class="menu-item" data-category="lauk">
+          <img src="img/Screenshot 2026-08-06 085045.png" alt="Kepala Ikan Kakap" />
+          <div class="menu-item-info">
+            <h3>Kepala Ikan Kakap <span style="font-size:0.75em;color:#e65c00;">(SPESIAL KAPAU)</span></h3>
+            <p>spesial Ikan Kepala Kakap merah yang di masak kuah kuning asam khas pesona kapau, kuah yang segar di padukan dengan kepala ikan kakap yang gurih menjadi pembangkit selera makan anda.</p>
+            <a href="#" class="menu-cat-tag">Lauk</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp75.000</span>
+            <a href="menu_detail.html?id=kepala-ikan-kakap" class="btn-detail">Lihat Detail</a>
           </div>
         </div>
 
         <div class="menu-item" data-category="lauk">
-          <img src="img/cf3db3f294804090c83eb546c88da565.jpg" alt="Telur Ayam Gulai" />
+          <img src="img/Screenshot 2026-08-06 085508.png" alt="Gulai Kakap Fillet" />
           <div class="menu-item-info">
-            <h3>Telur Ayam Gulai</h3>
-            <p>Telur ayam dimasak dengan kuah gulai santan kuning khas Padang, gurih dan lezat.</p>
+            <h3>Gulai Kakap Fillet</h3>
+            <p>Daging fillet ikan kakap tanpa duri yang lembut dimasak dalam kuah gulai santan kuning gurih khas Minang.</p>
+            <a href="#" class="menu-cat-tag">Lauk</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp25.000</span>
+            <a href="menu_detail.html?id=gulai-kakap-fillet" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="lauk">
+          <img src="img/Screenshot 2026-08-06 085100.png" alt="Ikan Nila Bakar" />
+          <div class="menu-item-info">
+            <h3>Ikan Nila Bakar</h3>
+            <p>Ikan nila segar dibakar dengan baluran bumbu bumbu kuning padang yang manis gurih beraroma asap harum.</p>
+            <a href="#" class="menu-cat-tag">Lauk</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp22.000</span>
+            <a href="menu_detail.html?id=ikan-nila-bakar" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="lauk">
+          <img src="img/Screenshot 2026-08-06 085109.png" alt="Ikan Gembung Goreng" />
+          <div class="menu-item-info">
+            <h3>Ikan Gembung Goreng</h3>
+            <p>Ikan gembung goreng garing renyah disajikan dengan taburan bumbu rempah gurih khas Padang.</p>
+            <a href="#" class="menu-cat-tag">Lauk</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp18.000</span>
+            <a href="menu_detail.html?id=ikan-gembung-goreng" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="lauk">
+          <img src="img/Screenshot 2026-08-06 085117.png" alt="Ikan Gembung Sambal Mentah" />
+          <div class="menu-item-info">
+            <h3>Ikan Gembung Sambal Mentah</h3>
+            <p>Ikan gembung goreng disajikan dengan irisan sambal mentah dabu-dabu khas yang pedas dan segar.</p>
+            <a href="#" class="menu-cat-tag">Lauk</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp19.000</span>
+            <a href="menu_detail.html?id=ikan-gembung-sambal-mentah" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="lauk">
+          <img src="img/Screenshot 2026-08-06 085127.png" alt="Ikan Gembung Pepes" />
+          <div class="menu-item-info">
+            <h3>Ikan Gembung Pepes</h3>
+            <p>Pepes ikan gembung bumbu rempah berbalut daun pisang yang dibakar aroma harum khas meresap sempurna.</p>
+            <a href="#" class="menu-cat-tag">Lauk</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp20.000</span>
+            <a href="menu_detail.html?id=ikan-gembung-pepes" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="lauk">
+          <img src="img/Screenshot 2026-08-06 085139.png" alt="Ikan Bilih Goreng" />
+          <div class="menu-item-info">
+            <h3>Ikan Bilih Goreng</h3>
+            <p>Ikan bilih khas Danau Singkarak Minang yang digoreng garing dan renyah gurih disajikan dengan sambal.</p>
+            <a href="#" class="menu-cat-tag">Lauk</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp20.000</span>
+            <a href="menu_detail.html?id=ikan-bilih-goreng" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="lauk">
+          <img src="img/Screenshot 2026-08-06 085146.png" alt="Ikan Lele Goreng" />
+          <div class="menu-item-info">
+            <h3>Ikan Lele Goreng</h3>
+            <p>Ikan lele goreng renyah bumbu rempah disajikan dengan kremesan dan sambal padang nikmat.</p>
+            <a href="#" class="menu-cat-tag">Lauk</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp15.000</span>
+            <a href="menu_detail.html?id=ikan-lele-goreng" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="lauk">
+          <img src="img/Screenshot 2026-08-06 085516.png" alt="Cumi Cumi Sambal Merah" />
+          <div class="menu-item-info">
+            <h3>Cumi Cumi Sambal Merah</h3>
+            <p>Olahan cumi-cumi segar empuk dipadukan dengan kuah sambal merah pedas manis mantap.</p>
+            <a href="#" class="menu-cat-tag">Lauk</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp25.000</span>
+            <a href="menu_detail.html?id=cumi-sambal-merah" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="lauk">
+          <img src="img/Screenshot 2026-08-06 085523.png" alt="Udang Sambal Merah" />
+          <div class="menu-item-info">
+            <h3>Udang Sambal Merah</h3>
+            <p>Udang segar dimasak bumbu sambal merah khas padang dengan rasa gurih pedas manis yang menggoda.</p>
+            <a href="#" class="menu-cat-tag">Lauk</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp25.000</span>
+            <a href="menu_detail.html?id=udang-sambal-merah" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="lauk">
+          <img src="img/Screenshot 2026-08-06 085704.png" alt="Telur Balado" />
+          <div class="menu-item-info">
+            <h3>Telur Balado</h3>
+            <p>Telur ayam bulat goreng dengan baluran sambal balado merah pedas manis gurih.</p>
+            <a href="#" class="menu-cat-tag">Lauk</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp7.000</span>
+            <a href="menu_detail.html?id=telur-balado" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="lauk">
+          <img src="img/Screenshot 2026-08-06 085715.png" alt="Telur Dadar Padang" />
+          <div class="menu-item-info">
+            <h3>Telur Dadar Padang</h3>
+            <p>Telur dadar tebal khas Padang dengan campuran daun bawang dan rempah yang gurih renyah di luar lembut di dalam.</p>
             <a href="#" class="menu-cat-tag">Lauk</a>
           </div>
           <div class="menu-item-action">
             <span class="menu-price">Rp8.000</span>
-            <a href="menu_detail.html?id=telur-gulai" class="btn-detail">Lihat Detail</a>
+            <a href="menu_detail.html?id=telur-dadar" class="btn-detail">Lihat Detail</a>
           </div>
         </div>
 
-        <!-- ===== SAYUR ===== -->
-        <div class="menu-item" data-category="sayur">
-          <img src="img/d3f1a9ad74bb9ce6050ae1f6ee87763a.jpg" alt="Sayur Kapau" />
+        <div class="menu-item" data-category="lauk">
+          <img src="img/Screenshot 2026-08-06 085648.png" alt="Nasi Putih" />
           <div class="menu-item-info">
-            <h3>Sayur Kapau</h3>
-            <p>Sayur khas Kapau Padang dengan kuah santan kuning berisi berbagai sayuran segar dan bumbu rempah.</p>
+            <h3>Nasi Putih</h3>
+            <p>Nasi putih hangat pulen khas beras pilihan pelengkap utama masakan Padang.</p>
+            <a href="#" class="menu-cat-tag">Lauk</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp5.000</span>
+            <a href="menu_detail.html?id=nasi-putih" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="lauk">
+          <img src="img/Screenshot 2026-08-06 085657.png" alt="Kerupuk Jangek" />
+          <div class="menu-item-info">
+            <h3>Kerupuk Jangek</h3>
+            <p>Kerupuk kulit sapi (jangek) renyah khas Minang, makin nikmat disiram kuah gulai/kalio.</p>
+            <a href="#" class="menu-cat-tag">Lauk</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp6.000</span>
+            <a href="menu_detail.html?id=kerupuk-jangek" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <!-- ===== SAYUR & JENGKOL ===== -->
+        <div class="menu-item" data-category="sayur">
+          <img src="img/Screenshot 2026-08-06 085602.png" alt="Sayur Kapau" />
+          <div class="menu-item-info">
+            <h3>Sayur Kapau <span style="font-size:0.75em;color:#e65c00;">(SPESIAL KAPAU)</span></h3>
+            <p>Sayur kapau khas Minangkabau dari nagari Kapau, dengan kuah santan kuning yang gurih berisi nangka muda, kacang panjang, dan rebung yang lezat memanjakan selera.</p>
             <a href="#" class="menu-cat-tag">Sayur</a>
           </div>
           <div class="menu-item-action">
@@ -431,95 +743,289 @@
         </div>
 
         <div class="menu-item" data-category="sayur">
-          <img src="img/d3f1a9ad74bb9ce6050ae1f6ee87763a.jpg" alt="Gulai Daun Singkong" />
+          <img src="img/Screenshot 2026-08-06 085536.png" alt="Daun Ubi / Singkong Rebus" />
           <div class="menu-item-info">
-            <h3>Gulai Daun Singkong</h3>
-            <p>Daun singkong dimasak gulai santan khas Padang dengan cita rasa gurih dan bumbu rempah pilihan.</p>
+            <h3>Daun Ubi / Singkong Rebus</h3>
+            <p>Rebusan daun singkong/ubi segar pilihan, lembut dan hijau alami sebagai pendamping lauk nasi Padang.</p>
+            <a href="#" class="menu-cat-tag">Sayur</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp4.000</span>
+            <a href="menu_detail.html?id=daun-ubi" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="sayur">
+          <img src="img/Screenshot 2026-08-06 085626.png" alt="Rendang Jengkol" />
+          <div class="menu-item-info">
+            <h3>Rendang Jengkol</h3>
+            <p>Jengkol empuk olahan khas dimasak bumbu rendang padang yang legit, gurih, dan pedas mantap.</p>
+            <a href="#" class="menu-cat-tag">Sayur</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp12.000</span>
+            <a href="menu_detail.html?id=rendang-jengkol" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="sayur">
+          <img src="img/Screenshot 2026-08-06 085632.png" alt="Sayur Tauge Tahu" />
+          <div class="menu-item-info">
+            <h3>Sayur Tauge Tahu</h3>
+            <p>Tumis sayur tauge segar dengan tahu yang renyah dan gurih, pelengkap sempurna makanan padang.</p>
             <a href="#" class="menu-cat-tag">Sayur</a>
           </div>
           <div class="menu-item-action">
             <span class="menu-price">Rp5.000</span>
-            <a href="menu_detail.html?id=gulai-singkong" class="btn-detail">Lihat Detail</a>
+            <a href="menu_detail.html?id=sayur-tauge" class="btn-detail">Lihat Detail</a>
           </div>
         </div>
 
-        <!-- ===== LAUK PELENGKAP ===== -->
-        <div class="menu-item" data-category="lauk">
-          <img src="img/cf3db3f294804090c83eb546c88da565.jpg" alt="Tempe/Tahu Kecil" />
+        <div class="menu-item" data-category="sayur">
+          <img src="img/Screenshot 2026-08-06 085639.png" alt="Jengkol Cabai Hijau" />
           <div class="menu-item-info">
-            <h3>Tempe / Tahu (Kecil)</h3>
-            <p>Tempe atau tahu goreng ukuran kecil sebagai lauk pelengkap.</p>
-            <a href="#" class="menu-cat-tag">Lauk</a>
+            <h3>Jengkol Cabai Hijau</h3>
+            <p>Olahan jengkol empuk ditumis dengan sambal cabai hijau mentah khas Minang yang pedas dan harum.</p>
+            <a href="#" class="menu-cat-tag">Sayur</a>
           </div>
           <div class="menu-item-action">
-            <span class="menu-price">Rp1.000</span>
-            <a href="menu_detail.html?id=tempe-tahu-kecil" class="btn-detail">Lihat Detail</a>
+            <span class="menu-price">Rp12.000</span>
+            <a href="menu_detail.html?id=jengkol-cabai-hijau" class="btn-detail">Lihat Detail</a>
           </div>
         </div>
 
-        <div class="menu-item" data-category="lauk">
-          <img src="img/cf3db3f294804090c83eb546c88da565.jpg" alt="Tempe/Tahu Besar" />
+        <div class="menu-item" data-category="sayur">
+          <img src="img/Screenshot 2026-08-06 085547.png" alt="Sambal Merah" />
           <div class="menu-item-info">
-            <h3>Tempe / Tahu (Besar)</h3>
-            <p>Tempe atau tahu goreng ukuran besar sebagai lauk pelengkap.</p>
-            <a href="#" class="menu-cat-tag">Lauk</a>
+            <h3>Sambal Merah</h3>
+            <p>Sambal merah khas Padang dari cabai merah pilihan yang ditumis minyak gurih beraroma khas.</p>
+            <a href="#" class="menu-cat-tag">Sayur</a>
           </div>
           <div class="menu-item-action">
-            <span class="menu-price">Rp2.000</span>
-            <a href="menu_detail.html?id=tempe-tahu-besar" class="btn-detail">Lihat Detail</a>
+            <span class="menu-price">Rp3.000</span>
+            <a href="menu_detail.html?id=sambal-merah" class="btn-detail">Lihat Detail</a>
           </div>
         </div>
 
-        <div class="menu-item" data-category="lauk">
-          <img src="img/30825f62038ff446435a521c0237f561.jpg" alt="Kerupuk" />
+        <div class="menu-item" data-category="sayur">
+          <img src="img/Screenshot 2026-08-06 085611.png" alt="Sambal Hijau" />
           <div class="menu-item-info">
-            <h3>Kerupuk</h3>
-            <p>Kerupuk renyah sebagai pelengkap makan, cocok dipadukan dengan lauk khas Padang.</p>
-            <a href="#" class="menu-cat-tag">Lauk</a>
+            <h3>Sambal Hijau</h3>
+            <p>Sambal cabai hijau padang otentik dengan racikan tomat hijau dan rempah yang pedas gurih.</p>
+            <a href="#" class="menu-cat-tag">Sayur</a>
           </div>
           <div class="menu-item-action">
-            <span class="menu-price">Rp1.000</span>
-            <a href="menu_detail.html?id=kerupuk" class="btn-detail">Lihat Detail</a>
+            <span class="menu-price">Rp3.000</span>
+            <a href="menu_detail.html?id=sambal-hijau" class="btn-detail">Lihat Detail</a>
           </div>
         </div>
 
-        <div class="menu-item" data-category="paket-nasi-bungkus">
-          <img src="img/30825f62038ff446435a521c0237f561.jpg" alt="Kemasan Syrofoam" />
-          <div class="menu-item-info">
-            <h3>Kemasan Syrofoam</h3>
-            <p>Tambahan kemasan syrofoam untuk nasi bungkus agar lebih praktis dibawa. (+Rp2.000)</p>
-            <a href="#" class="menu-cat-tag">Paket Nasi Bungkus</a>
-          </div>
-          <div class="menu-item-action">
-            <span class="menu-price">Rp2.000</span>
-            <a href="menu_detail.html?id=syrofoam" class="btn-detail">Lihat Detail</a>
-          </div>
-        </div>
-
-        <!-- ===== MINUMAN ===== -->
+        <!-- ===== MINUMAN KHAS & SEGAR ===== -->
         <div class="menu-item" data-category="minuman">
-          <img src="img/es jeruk.png" alt="Es Jeruk" />
+          <img src="img/Screenshot 2026-08-06 085757.png" alt="Teh Telur" />
           <div class="menu-item-info">
-            <h3>Es Jeruk</h3>
-            <p>Minuman perasan jeruk manis asli yang segar dan dingin, pas sebagai penutup hidangan pedas.</p>
+            <h3>Teh Telur <span style="font-size:0.75em;color:#e65c00;">(KHAS MINANG)</span></h3>
+            <p>Teh telur dan Kopi telur adalah minuman khas dari minang kabau yang dapat menjadi minuman yang meningkatkan stamina anda.</p>
+            <a href="#" class="menu-cat-tag">Minuman</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp12.000</span>
+            <a href="menu_detail.html?id=teh-telur" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="minuman">
+          <img src="img/Screenshot 2026-08-06 085805.png" alt="Kopi Telur" />
+          <div class="menu-item-info">
+            <h3>Kopi Telur <span style="font-size:0.75em;color:#e65c00;">(KHAS MINANG)</span></h3>
+            <p>Kopi dipadukan dengan kocokan telur khas Minangkabau yang kaya rasa dan dapat meningkatkan stamina anda.</p>
+            <a href="#" class="menu-cat-tag">Minuman</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp14.000</span>
+            <a href="menu_detail.html?id=kopi-telur" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="minuman">
+          <img src="img/Screenshot 2026-08-06 085815.png" alt="Soda Strawberry" />
+          <div class="menu-item-info">
+            <h3>Soda Strawberry</h3>
+            <p>Minuman es soda segar yang menyegarkan badan anda untuk semangat beraktivitas.</p>
+            <a href="#" class="menu-cat-tag">Minuman</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp12.000</span>
+            <a href="menu_detail.html?id=soda-strawberry" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="minuman">
+          <img src="img/Screenshot 2026-08-06 085823.png" alt="Soda Gembira" />
+          <div class="menu-item-info">
+            <h3>Soda Gembira</h3>
+            <p>Minuman es soda segar dipadukan susu kental manis dan sirup yang menyegarkan badan anda untuk semangat beraktivitas.</p>
+            <a href="#" class="menu-cat-tag">Minuman</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp14.000</span>
+            <a href="menu_detail.html?id=soda-gembira" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="minuman">
+          <img src="img/Screenshot 2026-08-06 085839.png" alt="Jus Alpukat" />
+          <div class="menu-item-info">
+            <h3>Jus Alpukat</h3>
+            <p>Jus buah alpukat segar alami pilihan disajikan dengan cocolan susu cokelat nikmat.</p>
+            <a href="#" class="menu-cat-tag">Minuman</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp15.000</span>
+            <a href="menu_detail.html?id=jus-alpukat" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="minuman">
+          <img src="img/Screenshot 2026-08-06 085839.png" alt="Jus Mangga" />
+          <div class="menu-item-info">
+            <h3>Jus Mangga</h3>
+            <p>Jus buah mangga manis dan segar alami kaya vitamin C.</p>
+            <a href="#" class="menu-cat-tag">Minuman</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp15.000</span>
+            <a href="menu_detail.html?id=jus-mangga" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="minuman">
+          <img src="img/Screenshot 2026-08-06 085839.png" alt="Jus Sirsak" />
+          <div class="menu-item-info">
+            <h3>Jus Sirsak</h3>
+            <p>Jus buah sirsak dengan cita rasa asam manis yang sangat menyegarkan.</p>
+            <a href="#" class="menu-cat-tag">Minuman</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp15.000</span>
+            <a href="menu_detail.html?id=jus-sirsak" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="minuman">
+          <img src="img/Screenshot 2026-08-06 085839.png" alt="Jus Semangka" />
+          <div class="menu-item-info">
+            <h3>Jus Semangka</h3>
+            <p>Jus buah semangka segar yang mendinginkan dahaga.</p>
+            <a href="#" class="menu-cat-tag">Minuman</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp15.000</span>
+            <a href="menu_detail.html?id=jus-semangka" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="minuman">
+          <img src="img/Screenshot 2026-08-06 085839.png" alt="Jus Stroberi" />
+          <div class="menu-item-info">
+            <h3>Jus Stroberi</h3>
+            <p>Jus buah stroberi manis asam segar kaya antioksidan.</p>
+            <a href="#" class="menu-cat-tag">Minuman</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp15.000</span>
+            <a href="menu_detail.html?id=jus-stroberi" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="minuman">
+          <img src="img/Screenshot 2026-08-06 085839.png" alt="Jus Melon" />
+          <div class="menu-item-info">
+            <h3>Jus Melon</h3>
+            <p>Jus buah melon manis harum dan menyegarkan.</p>
+            <a href="#" class="menu-cat-tag">Minuman</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp15.000</span>
+            <a href="menu_detail.html?id=jus-melon" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="minuman">
+          <img src="img/Screenshot 2026-08-06 085839.png" alt="Teh Tarik" />
+          <div class="menu-item-info">
+            <h3>Teh Tarik</h3>
+            <p>Teh tarik nikmat berbusa lembut paduan teh dan susu yang gurih manis pas.</p>
+            <a href="#" class="menu-cat-tag">Minuman</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp15.000</span>
+            <a href="menu_detail.html?id=teh-tarik" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="minuman">
+          <img src="img/Screenshot 2026-08-06 085845.png" alt="Teh Manis" />
+          <div class="menu-item-info">
+            <h3>Teh Manis</h3>
+            <p>Teh manis segar disajikan dingin atau hangat pelengkap makan hidangan Minang.</p>
+            <a href="#" class="menu-cat-tag">Minuman</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp7.000</span>
+            <a href="menu_detail.html?id=teh-manis" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="minuman">
+          <img src="img/Screenshot 2026-08-06 085850.png" alt="Jeruk Peras" />
+          <div class="menu-item-info">
+            <h3>Jeruk Peras</h3>
+            <p>Perasan jeruk manis segar pilihan disajikan dingin dengan es yang kaya vitamin C.</p>
+            <a href="#" class="menu-cat-tag">Minuman</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp15.000</span>
+            <a href="menu_detail.html?id=jeruk-peras" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="minuman">
+          <img src="img/Screenshot 2026-08-06 085857.png" alt="Lemon Tea" />
+          <div class="menu-item-info">
+            <h3>Lemon Tea</h3>
+            <p>Minuman teh diseduh segar dipadukan perasan jeruk lemon asli yang asam manis dingin.</p>
+            <a href="#" class="menu-cat-tag">Minuman</a>
+          </div>
+          <div class="menu-item-action">
+            <span class="menu-price">Rp15.000</span>
+            <a href="menu_detail.html?id=lemon-tea" class="btn-detail">Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="menu-item" data-category="minuman">
+          <img src="img/Screenshot 2026-08-06 085903.png" alt="Kopi Hitam" />
+          <div class="menu-item-info">
+            <h3>Kopi Hitam</h3>
+            <p>Kopi hitam tradisional diseduh dengan cita rasa dan aroma kopi mantap.</p>
             <a href="#" class="menu-cat-tag">Minuman</a>
           </div>
           <div class="menu-item-action">
             <span class="menu-price">Rp8.000</span>
-            <a href="menu_detail.html?id=es-jeruk" class="btn-detail">Lihat Detail</a>
+            <a href="menu_detail.html?id=kopi-hitam" class="btn-detail">Lihat Detail</a>
           </div>
         </div>
 
         <div class="menu-item" data-category="minuman">
-          <img src="img/es teh.png" alt="Teh" />
+          <img src="img/Screenshot 2026-08-06 085914.png" alt="Kopi Susu" />
           <div class="menu-item-info">
-            <h3>Teh</h3>
-            <p>Teh hangat atau dingin pilihan yang menyegarkan untuk menemani hidangan Anda.</p>
+            <h3>Kopi Susu</h3>
+            <p>Paduan kopi hitam mantap dengan susu manis gurih yang memberikan kesegaran.</p>
             <a href="#" class="menu-cat-tag">Minuman</a>
           </div>
           <div class="menu-item-action">
-            <span class="menu-price">Rp5.000</span>
-            <a href="menu_detail.html?id=teh" class="btn-detail">Lihat Detail</a>
+            <span class="menu-price">Rp10.000</span>
+            <a href="menu_detail.html?id=kopi-susu" class="btn-detail">Lihat Detail</a>
           </div>
         </div>
 
@@ -560,7 +1066,7 @@
     </div>
     <div class="footer-contact">
       <h4>Kontak</h4>
-      <p><i class="fa fa-phone"></i> +62 812-3456-7890</p>
+      <p><i class="fa fa-phone"></i> +62 812-1747-6223</p>
       <p><i class="fa fa-envelope"></i> info@rmpadang.com</p>
       <p><a href="https://maps.app.goo.gl/tJoHpj8N56SnJppR9" target="_blank"
           style="color: inherit; text-decoration: none;"><i class="fa fa-map-marker-alt"></i> Jl. Magelang - Yogyakarta

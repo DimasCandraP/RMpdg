@@ -292,24 +292,57 @@
 }
 
 .login-logo-brand {
-    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.login-logo-brand .logo {
+    height: 40px;
+    width: auto;
+}
+
+.login-logo-brand .brand-name {
+    display: block;
+    font-size: 1.1rem;
     font-weight: 800;
-    color: var(--white);
-    letter-spacing: 0.5px;
+    color: var(--secondary);
+    letter-spacing: 0.3px;
+    line-height: 1.2;
+}
+
+.login-logo-brand .brand-sub {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 400;
+    color: rgba(255,255,255,0.8);
+    letter-spacing: 0.2px;
 }
 
 .back-to-home {
     color: var(--white);
-    font-size: 0.88rem;
-    font-weight: 600;
-    display: flex;
+    font-size: 0.85rem;
+    font-weight: 700;
+    display: inline-flex;
     align-items: center;
-    gap: 8px;
-    transition: color 0.2s;
+    justify-content: center;
+    padding: 8px 22px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 30px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    text-decoration: none;
+    transition: all 0.25s ease;
 }
 
 .back-to-home:hover {
-    color: var(--secondary);
+    color: #333;
+    background: var(--secondary);
+    border-color: var(--secondary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(230, 92, 0, 0.35);
 }
 
 /* ===== WRAPPER KONTEN ===== */
@@ -469,6 +502,17 @@
     font-size: 0.9rem;
     color: var(--text-dark);
     box-shadow: none !important;
+}
+
+/* Sembunyikan tombol mata bawaan browser (Chrome/Edge) agar tidak dobel dengan tombol custom */
+.login-input-wrapper input[type="password"]::-ms-reveal,
+.login-input-wrapper input[type="password"]::-ms-clear {
+    display: none;
+}
+.login-input-wrapper input[type="password"]::-webkit-contacts-auto-fill-button,
+.login-input-wrapper input[type="password"]::-webkit-credentials-auto-fill-button {
+    visibility: hidden;
+    pointer-events: none;
 }
 
 .btn-toggle-eye {

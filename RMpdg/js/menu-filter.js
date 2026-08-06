@@ -1,12 +1,14 @@
 /**
  * menu-filter.js
  * Filter, pencarian & paginasi menu (maksimal 7 menu per halaman)
+ * Kategori tersimpan di URL & localStorage sehingga tidak kembali ke "semua" saat refresh.
  */
 
 let activeFilter = 'semua';
 let activeKeyword = '';
 let currentPage = 1;
 const ITEMS_PER_PAGE = 7;
+const VALID_CATEGORIES = ['semua', 'paket-nasi', 'lauk', 'sayur', 'minuman'];
 
 // -----------------------------------------------
 // Mapping nama kategori DB → data-category slug
@@ -14,12 +16,66 @@ const ITEMS_PER_PAGE = 7;
 function getCategorySlug(kategoriNama) {
   if (!kategoriNama) return 'lauk';
   const k = kategoriNama.toLowerCase().trim();
-  if (k.includes('nasi box'))     return 'paket-nasi-box';
-  if (k.includes('nasi bungkus')) return 'paket-nasi-bungkus';
+  if (k.includes('paket nasi') || k.includes('nasi')) return 'paket-nasi';
   if (k.includes('lauk'))         return 'lauk';
   if (k.includes('sayur'))        return 'sayur';
   if (k.includes('minuman'))      return 'minuman';
   return 'lauk';
+}
+
+// -----------------------------------------------
+// Inisialisasi Kategori Aktif (dibaca dari head inline script)
+// -----------------------------------------------
+function initActiveCategory() {
+  // window.__MENU_INIT_CATEGORY__ diset oleh inline script di <head>
+  // SEBELUM halaman dirender, sehingga tidak ada flash ke kategori "semua"
+  const cat = window.__MENU_INIT_CATEGORY__ || 'semua';
+  activeFilter = VALID_CATEGORIES.includes(cat) ? cat : 'semua';
+  updateCategoryUI(activeFilter);
+}
+
+// -----------------------------------------------
+// Ubah Kategori Aktif & Simpan ke URL/Storage
+// -----------------------------------------------
+function setCategory(cat, resetPage = true) {
+  activeFilter = VALID_CATEGORIES.includes(cat) ? cat : 'semua';
+  
+  // Simpan ke localStorage
+  localStorage.setItem('menu_active_category', activeFilter);
+
+  // Update URL query string tanpa reload halaman
+  try {
+    const newUrl = new URL(window.location.href);
+    if (activeFilter === 'semua') {
+      newUrl.searchParams.delete('cat');
+      newUrl.searchParams.delete('kategori');
+      newUrl.searchParams.delete('category');
+    } else {
+      newUrl.searchParams.set('cat', activeFilter);
+    }
+    window.history.replaceState(null, '', newUrl.toString());
+  } catch (e) {}
+
+  updateCategoryUI(activeFilter);
+  applyFilter(resetPage);
+}
+
+// -----------------------------------------------
+// Update UI Tab & Sidebar Link Aktif
+// -----------------------------------------------
+function updateCategoryUI(cat) {
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const sidebarLinks = document.querySelectorAll('.sidebar-link');
+
+  tabBtns.forEach(btn => {
+    const filter = btn.dataset.filter || 'semua';
+    btn.classList.toggle('active', filter === cat);
+  });
+
+  sidebarLinks.forEach(link => {
+    const catAttr = link.dataset.cat || 'semua';
+    link.classList.toggle('active', catAttr === cat);
+  });
 }
 
 // -----------------------------------------------
@@ -74,6 +130,10 @@ function applyFilter(resetPage = false) {
   if (menuEmpty) {
     menuEmpty.style.display = totalItems === 0 ? 'block' : 'none';
   }
+
+  // Hapus FOUC shield setelah filter pertama kali diterapkan
+  const shield = document.getElementById('menu-fouc-shield');
+  if (shield) shield.remove();
 
   // 3. Render tombol paginasi
   renderPagination(totalPages);
@@ -145,30 +205,16 @@ function setupFilterEvents() {
 
   tabBtns.forEach(btn => {
     btn.onclick = () => {
-      tabBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      activeFilter = btn.dataset.filter || 'semua';
-
-      sidebarLinks.forEach(link => {
-        link.classList.toggle('active', link.dataset.cat === activeFilter);
-      });
-
-      applyFilter(true);
+      const cat = btn.dataset.filter || 'semua';
+      setCategory(cat, true);
     };
   });
 
   sidebarLinks.forEach(link => {
     link.onclick = (e) => {
       e.preventDefault();
-      sidebarLinks.forEach(l => l.classList.remove('active'));
-      link.classList.add('active');
-      activeFilter = link.dataset.cat || 'semua';
-
-      tabBtns.forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.filter === activeFilter);
-      });
-
-      applyFilter(true);
+      const cat = link.dataset.cat || 'semua';
+      setCategory(cat, true);
     };
   });
 
@@ -235,6 +281,7 @@ async function loadMenuFromAPI() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  initActiveCategory();
   setupFilterEvents();
   applyFilter(true);
   loadMenuFromAPI();
