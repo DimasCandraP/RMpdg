@@ -124,20 +124,20 @@
                 <!-- Pesanan Terbaru -->
                 <div class="dash-card">
                     <div class="dash-card-header">
-                        <h3>Pesanan Catering Terbaru</h3>
-                        <a href="pesanan.php">Lihat Semua</a>
+                        <h3>Pesanan Makanan Terbaru</h3>
+                        <a href="pesanan-menu.php">Lihat Semua</a>
                     </div>
                     <table class="admin-table">
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Nama</th>
-                                <th>Paket</th>
-                                <th>Tanggal Acara</th>
+                                <th>Pemesan</th>
+                                <th>Layanan</th>
+                                <th>Total</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
-                        <tbody id="tblCateringBody">
+                        <tbody id="tblPesananBody">
                             <tr><td colspan="5" style="text-align:center; padding:15px; color:#888;">Memuat data...</td></tr>
                         </tbody>
                     </table>
@@ -235,33 +235,32 @@
             try {
                 const resMenu = await fetch(`${API_BASE}/pesanan_menu.php`, { credentials: 'same-origin' });
                 const menuOrders = resMenu.ok ? await resMenu.json() : [];
-                
-                const resCat = await fetch(`${API_BASE}/catering.php?admin=1`, { credentials: 'same-origin' });
-                const catOrders = resCat.ok ? await resCat.json() : [];
 
-                const totalPesanan = (Array.isArray(menuOrders) ? menuOrders.length : 0) + (Array.isArray(catOrders) ? catOrders.length : 0);
-                document.getElementById('statPesananNum').textContent = totalPesanan;
+                document.getElementById('statPesananNum').textContent = Array.isArray(menuOrders) ? menuOrders.length : 0;
+                const subEl = document.getElementById('statPesananSub');
+                if (subEl) subEl.textContent = 'Pesanan Masuk';
 
-                const cBody = document.getElementById('tblCateringBody');
-                if (Array.isArray(catOrders) && catOrders.length > 0) {
-                    cBody.innerHTML = catOrders.slice(0, 4).map(row => {
+                const pBody = document.getElementById('tblPesananBody');
+                if (pBody && Array.isArray(menuOrders) && menuOrders.length > 0) {
+                    pBody.innerHTML = menuOrders.slice(0, 5).map(row => {
                         let badgeCls = 'pending';
-                        if (row.status === 'dikonfirmasi') badgeCls = 'confirmed';
+                        if (row.status === 'diproses') badgeCls = 'confirmed';
                         else if (row.status === 'selesai') badgeCls = 'done';
                         else if (row.status === 'dibatalkan') badgeCls = 'cancel';
 
+                        const totalRp = Number(row.total || 0).toLocaleString('id-ID');
                         return `
                             <tr>
                                 <td>${row.kode_pesanan || '#' + row.id}</td>
-                                <td>${row.nama}</td>
-                                <td>${row.nama_paket || 'Paket'}</td>
-                                <td>${row.tanggal_acara}</td>
+                                <td>${row.nama_pemesan || '-'}</td>
+                                <td>${row.order_type || 'Menu'}</td>
+                                <td>Rp${totalRp}</td>
                                 <td><span class="badge ${badgeCls}">${row.status}</span></td>
                             </tr>
                         `;
                     }).join('');
-                } else {
-                    cBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:15px; color:#888;">Belum ada pesanan catering.</td></tr>`;
+                } else if (pBody) {
+                    pBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:15px; color:#888;">Belum ada pesanan makanan.</td></tr>`;
                 }
             } catch (e) {
                 console.error(e);
