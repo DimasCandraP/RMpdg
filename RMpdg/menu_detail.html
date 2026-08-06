@@ -69,16 +69,6 @@
         <span class="detail-price">Rp25.000</span>
       </div>
 
-      <!-- Rating -->
-      <div class="detail-rating">
-        <i class="fa fa-star"></i>
-        <i class="fa fa-star"></i>
-        <i class="fa fa-star"></i>
-        <i class="fa fa-star"></i>
-        <i class="fa fa-star-half-alt"></i>
-        <span>(125 Ulasan)</span>
-      </div>
-
       <p class="detail-desc">
         Daging sapi pilihan dimasak perlahan dengan bumbu rempah-rempah khas Padang hingga empuk dan meresap sempurna.
       </p>
@@ -113,54 +103,6 @@
       </div>
     </div>
   </section>
-
-  <!-- ULASAN & RATING PELANGGAN -->
-  <section class="ulasan-section">
-    <div class="ulasan-container">
-      <div class="ulasan-header">
-        <h2><i class="fa fa-comments" style="color:var(--primary);margin-right:8px;"></i> Ulasan &amp; Rating Pelanggan</h2>
-      </div>
-
-      <!-- Summary Ringkasan Rating -->
-      <div class="ulasan-summary">
-        <div class="rating-big" id="summaryRatingScore">4.8</div>
-        <div class="rating-stars-summary">
-          <div class="stars-row" id="summaryRatingStars">
-            <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star-half-alt"></i>
-          </div>
-          <span class="rating-subtext" id="summaryRatingCount">Berdasarkan 180 ulasan pembeli</span>
-        </div>
-      </div>
-
-      <!-- Form Tambah Ulasan -->
-      <div class="form-ulasan-box">
-        <h3>Beri Ulasan Makanan Ini</h3>
-        <div class="star-input-group">
-          <label>Pilih Rating:</label>
-          <div class="star-picker" id="starPicker">
-            <i class="fa fa-star active" data-value="1"></i>
-            <i class="fa fa-star active" data-value="2"></i>
-            <i class="fa fa-star active" data-value="3"></i>
-            <i class="fa fa-star active" data-value="4"></i>
-            <i class="fa fa-star active" data-value="5"></i>
-          </div>
-        </div>
-        <div class="form-group-ulasan">
-          <textarea id="txtUlasan" placeholder="Bagaimana cita rasa dan kepuasan Anda menikmati masakan ini? Tulis ulasan Anda..."></textarea>
-        </div>
-        <button type="button" class="btn-kirim-ulasan" onclick="submitUlasan()">
-          <i class="fa fa-paper-plane"></i> Kirim Ulasan
-        </button>
-      </div>
-
-      <!-- Daftar Ulasan Pelanggan -->
-      <div class="ulasan-list" id="ulasanList">
-        <!-- Diisi secara dinamis oleh JavaScript -->
-      </div>
-    </div>
-  </section>
-
-  <!-- MENU LAINNYA -->
   <section class="menu-lainnya">
     <h2>Menu Lainnya</h2>
     <div class="lainnya-grid" id="lainnyaGrid">
@@ -216,133 +158,8 @@
       document.getElementById('qty').textContent = qty;
     }
 
-    let selectedRating = 5;
-
-    function setupStarPicker() {
-      const stars = document.querySelectorAll('#starPicker i');
-      stars.forEach(star => {
-        star.addEventListener('click', () => {
-          selectedRating = parseInt(star.getAttribute('data-value'), 10);
-          updateStarPickerUI(selectedRating);
-        });
-      });
-    }
-
-    function updateStarPickerUI(val) {
-      const stars = document.querySelectorAll('#starPicker i');
-      stars.forEach(star => {
-        const v = parseInt(star.getAttribute('data-value'), 10);
-        if (v <= val) {
-          star.classList.add('active');
-          star.classList.remove('fa-regular');
-          star.classList.add('fa');
-        } else {
-          star.classList.remove('active');
-          star.classList.remove('fa');
-          star.classList.add('fa-regular');
-        }
-      });
-    }
-
-    function getMenuReviews(menuId) {
-      const local = localStorage.getItem('reviews_' + menuId);
-      if (local) {
-        try { return JSON.parse(local); } catch(e) {}
-      }
-      return [
-        { nama: "Budi Santoso", tanggal: "2 hari lalu", rating: 5, komentar: "Rasa rempahnya sangat otentik dan bumbunya meresap sempurna. Sangat direkomendasikan!" },
-        { nama: "Siti Rahmawati", tanggal: "1 minggu lalu", rating: 5, komentar: "Porsinya pas, cita rasanya konsisten lezat khas Pesona Kapau." },
-        { nama: "Ahmad Rizky", tanggal: "2 minggu lalu", rating: 4, komentar: "Pedasnya gurih dan mantap, cocok disantap hangat bersama keluarga." }
-      ];
-    }
-
-    function renderUlasan(menu) {
-      const reviews = getMenuReviews(menu.id);
-      
-      let totalRating = (menu.rating * menu.ulasan);
-      let totalCount = menu.ulasan;
-      
-      const userAdded = reviews.filter(r => r.isUser);
-      if (userAdded.length > 0) {
-        userAdded.forEach(r => {
-          totalRating += r.rating;
-          totalCount += 1;
-        });
-      }
-      
-      const avgRating = totalCount > 0 ? (totalRating / totalCount) : menu.rating;
-      
-      const scoreEl = document.getElementById('summaryRatingScore');
-      if (scoreEl) scoreEl.textContent = avgRating.toFixed(1);
-
-      const countEl = document.getElementById('summaryRatingCount');
-      if (countEl) countEl.textContent = `Berdasarkan ${totalCount} ulasan pembeli`;
-
-      const starsEl = document.getElementById('summaryRatingStars');
-      if (starsEl) {
-        let starsHtml = '';
-        const full = Math.floor(avgRating);
-        const half = avgRating % 1 >= 0.5;
-        for (let i = 0; i < 5; i++) {
-          if (i < full) starsHtml += '<i class="fa fa-star"></i>';
-          else if (i === full && half) starsHtml += '<i class="fa fa-star-half-alt"></i>';
-          else starsHtml += '<i class="fa-regular fa-star"></i>';
-        }
-        starsEl.innerHTML = starsHtml;
-      }
-
-      const listEl = document.getElementById('ulasanList');
-      if (!listEl) return;
-
-      listEl.innerHTML = reviews.map(r => {
-        let rStars = '';
-        for (let i = 0; i < 5; i++) {
-          rStars += (i < r.rating) ? '<i class="fa fa-star"></i>' : '<i class="fa-regular fa-star"></i>';
-        }
-        return `
-          <div class="ulasan-item">
-            <div class="ulasan-item-header">
-              <span class="reviewer-name">${r.nama}</span>
-              <span class="reviewer-date">${r.tanggal}</span>
-            </div>
-            <div class="reviewer-stars">${rStars}</div>
-            <p class="reviewer-comment">${r.komentar}</p>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function submitUlasan() {
-      const menu = window.currentMenu || MENU_DATA['rendang'];
-      const txt = document.getElementById('txtUlasan').value.trim();
-      if (!txt) {
-        alert('Mohon tuliskan ulasan Anda terlebih dahulu.');
-        return;
-      }
-
-      const userName = localStorage.getItem('user_name') || sessionStorage.getItem('user_name') || 'Pelanggan RM Padang';
-      const reviews = getMenuReviews(menu.id);
-      
-      const newReview = {
-        nama: userName,
-        tanggal: 'Baru saja',
-        rating: selectedRating,
-        komentar: txt,
-        isUser: true
-      };
-
-      reviews.unshift(newReview);
-      localStorage.setItem('reviews_' + menu.id, JSON.stringify(reviews));
-
-      document.getElementById('txtUlasan').value = '';
-      alert('Terima kasih! Ulasan dan rating Anda telah berhasil dikirim.');
-      renderUlasan(menu);
-    }
-
     // Dynamic menu loading based on URL parameter
     document.addEventListener('DOMContentLoaded', async () => {
-      setupStarPicker();
-
       const params = new URLSearchParams(window.location.search);
       const menuSlug = params.get('id') || 'rendang';
       const fallbackMenu = MENU_DATA[menuSlug] || MENU_DATA['rendang'];
@@ -364,8 +181,6 @@
               pedas: Number(apiMenu.tingkat_pedas || fallbackMenu.pedas),
               berat: apiMenu.berat || fallbackMenu.berat,
               kalori: apiMenu.kalori || fallbackMenu.kalori,
-              rating: Number(apiMenu.rating || fallbackMenu.rating),
-              ulasan: Number(apiMenu.jumlah_ulasan || fallbackMenu.ulasan),
               img: apiMenu.gambar_utama || fallbackMenu.img,
               thumbnails: [apiMenu.gambar_utama || fallbackMenu.img, ...fallbackMenu.thumbnails.slice(1)]
             };
@@ -403,25 +218,6 @@
       const descEl = document.querySelector('.detail-desc');
       if (descEl) descEl.textContent = menu.deskripsi;
 
-      // Rating
-      const ratingContainer = document.querySelector('.detail-rating');
-      if (ratingContainer) {
-        let starsHtml = '';
-        const fullStars = Math.floor(menu.rating);
-        const hasHalf = menu.rating % 1 !== 0;
-        for (let i = 0; i < 5; i++) {
-          if (i < fullStars) {
-            starsHtml += '<i class="fa fa-star"></i>';
-          } else if (i === fullStars && hasHalf) {
-            starsHtml += '<i class="fa fa-star-half-alt"></i>';
-          } else {
-            starsHtml += '<i class="fa-regular fa-star" style="color: var(--secondary)"></i>';
-          }
-        }
-        starsHtml += `<span>(${menu.ulasan} Ulasan)</span>`;
-        ratingContainer.innerHTML = starsHtml;
-      }
-
       // Table specs
       const tableRows = document.querySelectorAll('.detail-table tr');
       if (tableRows.length >= 2) {
@@ -431,9 +227,6 @@
 
       // Bind local window menu variable for Cart submission
       window.currentMenu = menu;
-
-      // Render ulasan pelanggan
-      renderUlasan(menu);
 
       // Render menu lainnya dinamis
       renderMenuLainnya(menu);
