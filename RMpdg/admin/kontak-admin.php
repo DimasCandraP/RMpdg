@@ -27,8 +27,6 @@
             <div class="nav-label">KELOLA</div>
             <a href="menu-admin.php" class="nav-item"><i class="fa fa-utensils"></i> Menu Makanan</a>
             <a href="kategori.php" class="nav-item"><i class="fa fa-tags"></i> Kategori Menu</a>
-            <a href="catering-admin.php" class="nav-item"><i class="fa fa-box-open"></i> Paket Catering</a>
-            <a href="pesanan.php" class="nav-item"><i class="fa fa-clipboard-list"></i> Pesanan Catering</a>
             <a href="pesanan-menu.php" class="nav-item"><i class="fa fa-shopping-cart"></i> Pesanan Menu</a>
             <a href="reservasi-admin.php" class="nav-item"><i class="fa fa-calendar-check"></i> Reservasi</a>
             <a href="promosi-admin.php" class="nav-item"><i class="fa fa-percent"></i> Promosi</a>
