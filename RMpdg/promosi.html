@@ -138,6 +138,61 @@
 
   <script src="js/main.js"></script>
   <script src="js/cart.js"></script>
+  <script>
+    const API_BASE = window.API_BASE || (window.location.pathname.includes('/MPTI/') ? '/MPTI/rmpdg-backend/api' : '/rmpdg-backend/api');
+
+    document.addEventListener('DOMContentLoaded', loadPromos);
+
+    async function loadPromos() {
+      const grid = document.querySelector('.promosi-grid');
+      if (!grid) return;
+
+      try {
+        const res = await fetch(`${API_BASE}/promosi.php?_t=${Date.now()}`);
+        if (!res.ok) return;
+        const data = await res.json();
+
+        if (Array.isArray(data) && data.length > 0) {
+          grid.innerHTML = data.map(promo => {
+            const isGoogleReview = (promo.sub_judul || '').includes('GOOGLE') || (promo.judul || '').includes('GOOGLE');
+            const themeBg = promo.warna_tema === 'gold' 
+              ? 'linear-gradient(135deg, #D4AC0D 0%, #B7950B 100%)' 
+              : promo.warna_tema === 'maroon'
+              ? 'linear-gradient(135deg, #8B0000 0%, #5B0000 100%)'
+              : 'linear-gradient(135deg, #1565C0 0%, #0D47A1 100%)';
+
+            const gambarUrl = promo.gambar ? `${API_BASE}/../uploads/${promo.gambar}` : null;
+
+            return `
+              <div class="promo-big-card" style="background:${themeBg};color:#fff;grid-column:1/-1; border-radius:18px; padding:32px; box-shadow:0 8px 24px rgba(0,0,0,0.15); margin-bottom:20px;">
+                <div class="promo-big-info">
+                  ${promo.sub_judul ? `<span class="promo-tag" style="background:rgba(255,255,255,0.22);color:#fff;letter-spacing:1px;padding:6px 14px;border-radius:20px;font-size:0.85rem;font-weight:700;display:inline-block;margin-bottom:10px;">${promo.sub_judul}</span>` : ''}
+                  <h2 style="color:#fff;font-size:2.4rem;font-weight:900;margin:6px 0;">${promo.judul}</h2>
+                  ${promo.deskripsi ? `<p style="color:rgba(255,255,255,0.92);font-size:1rem;line-height:1.6;margin-bottom:14px;">${promo.deskripsi}</p>` : ''}
+                  
+                  ${gambarUrl ? `<div style="margin:16px 0;"><img src="${gambarUrl}" alt="${promo.judul}" style="max-width:100%; max-height:280px; border-radius:12px; border:2px solid rgba(255,255,255,0.3); object-fit:cover;" /></div>` : ''}
+
+                  <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:18px;">
+                    <span class="promo-periode" style="color:rgba(255,255,255,0.85);font-size:0.9rem;font-weight:600;">
+                      <i class="fa fa-calendar-check"></i> ${promo.tanggal_mulai && promo.tanggal_akhir ? `Berlaku: ${promo.tanggal_mulai} s/d ${promo.tanggal_akhir}` : 'Berlaku Setiap Hari'}
+                    </span>
+                    ${promo.diskon_persen ? `<span class="promo-periode" style="color:#FFE082;font-size:0.95rem;font-weight:800;"><i class="fa fa-tag"></i> Diskon ${promo.diskon_persen}%</span>` : ''}
+                  </div>
+                  ${isGoogleReview ? `
+                  <a href="https://maps.app.goo.gl/tJoHpj8N56SnJppR9" target="_blank" class="btn-promo-big"
+                    style="background:#fff;color:#1565C0;font-size:0.95rem;font-weight:800;padding:12px 26px;border-radius:30px;display:inline-flex;align-items:center;gap:8px;text-decoration:none;">
+                    <i class="fab fa-google"></i> Buka Google Maps &amp; Beri Review
+                  </a>` : ''}
+                </div>
+              </div>
+            `;
+          }).join('');
+        }
+      } catch (e) {
+        console.error('Gagal memuat promo:', e);
+      }
+    }
+  </script>
 </body>
 
 </html>

@@ -177,6 +177,7 @@
                         <div class="pac-header ${themeClass}">
                             <span class="pac-badge ${isActive ? '' : 'nonaktif'}">${isActive ? 'AKTIF' : 'NONAKTIF'}</span>
                             <div class="pac-actions">
+                                <button onclick="editPromo(${promo.id})" title="Edit"><i class="fa fa-edit"></i></button>
                                 <button onclick="hapusPromo(${promo.id})" title="Hapus"><i class="fa fa-trash"></i></button>
                             </div>
                         </div>
@@ -258,14 +259,42 @@
             document.getElementById('sidebar').classList.toggle('collapsed');
         }
 
-        function openPromoForm(mode = 'add') {
+        let currentEditId = null;
+
+        function openPromoForm(mode = 'add', promo = null) {
+            currentEditId = mode === 'edit' && promo ? promo.id : null;
             document.getElementById('promoFormTitle').textContent =
                 mode === 'add' ? 'Tambah Promo Baru' : 'Edit Promo';
+
+            if (mode === 'edit' && promo) {
+                document.getElementById('pJudul').value = promo.judul || '';
+                document.getElementById('pSubJudul').value = promo.sub_judul || '';
+                document.getElementById('pDeskripsi').value = promo.deskripsi || '';
+                document.getElementById('pDiskon').value = promo.diskon_persen || 0;
+                document.getElementById('pWarna').value = promo.warna_tema || 'red';
+                document.getElementById('pTglMulai').value = promo.tanggal_mulai || '';
+                document.getElementById('pTglAkhir').value = promo.tanggal_akhir || '';
+                document.getElementById('pStatus').value = promo.status || 'aktif';
+            } else {
+                ['pJudul', 'pSubJudul', 'pDeskripsi', 'pDiskon', 'pTglMulai', 'pTglAkhir', 'promoImg'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.value = '';
+                });
+                document.getElementById('pWarna').value = 'red';
+                document.getElementById('pStatus').value = 'aktif';
+            }
+
             document.getElementById('promoModal').style.display = 'flex';
+        }
+
+        function editPromo(id) {
+            const promo = promoList.find(x => x.id == id);
+            if (promo) openPromoForm('edit', promo);
         }
 
         function closePromoModal() {
             document.getElementById('promoModal').style.display = 'none';
+            currentEditId = null;
         }
 
         async function savePromo() {
@@ -284,31 +313,57 @@
                 return;
             }
 
-            const formData = new FormData();
-            formData.append('judul', judul);
-            formData.append('sub_judul', subJudul);
-            formData.append('deskripsi', deskripsi);
-            formData.append('diskon_persen', diskon || 0);
-            formData.append('warna_tema', warnaTema);
-            formData.append('tanggal_mulai', tglMulai);
-            formData.append('tanggal_akhir', tglAkhir);
-            formData.append('status', status);
-
-            if (fileInput.files && fileInput.files.length > 0) {
-                formData.append('gambar', fileInput.files[0]);
-            }
-
             try {
-                const response = await fetch(`${API_BASE}/promosi.php`, {
-                    method: 'POST',
-                    credentials: 'same-origin',
-                    body: formData
-                });
+                if (currentEditId) {
+                    // Mode Edit
+                    const response = await fetch(`${API_BASE}/promosi.php?id=${currentEditId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'same-origin',
+                        body: JSON.stringify({
+                            judul,
+                            sub_judul: subJudul,
+                            deskripsi,
+                            diskon_persen: diskon || 0,
+                            warna_tema: warnaTema,
+                            tanggal_mulai: tglMulai,
+                            tanggal_akhir: tglAkhir,
+                            status
+                        })
+                    });
 
-                const result = await response.json();
-                if (!response.ok) throw new Error(result.error || 'Gagal menambahkan promo');
+                    const result = await response.json();
+                    if (!response.ok) throw new Error(result.error || 'Gagal menyimpan perubahan promo');
 
-                alert('Promosi berhasil ditambahkan!');
+                    alert('Promosi berhasil diperbarui!');
+                } else {
+                    // Mode Tambah Baru
+                    const formData = new FormData();
+                    formData.append('judul', judul);
+                    formData.append('sub_judul', subJudul);
+                    formData.append('deskripsi', deskripsi);
+                    formData.append('diskon_persen', diskon || 0);
+                    formData.append('warna_tema', warnaTema);
+                    formData.append('tanggal_mulai', tglMulai);
+                    formData.append('tanggal_akhir', tglAkhir);
+                    formData.append('status', status);
+
+                    if (fileInput.files && fileInput.files.length > 0) {
+                        formData.append('gambar', fileInput.files[0]);
+                    }
+
+                    const response = await fetch(`${API_BASE}/promosi.php`, {
+                        method: 'POST',
+                        credentials: 'same-origin',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+                    if (!response.ok) throw new Error(result.error || 'Gagal menambahkan promo');
+
+                    alert('Promosi berhasil ditambahkan!');
+                }
+
                 closePromoModal();
                 loadPromoAdmin();
             } catch (err) {
